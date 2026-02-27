@@ -22,12 +22,6 @@ def get_23_data():
 
 
 def prepare_labels(Y):
-    """Convert raw Y times into training labels and eval matrix.
-
-    Returns (y_labels, Y_eval) where:
-      - y_labels: argmin solver per instance (NaN treated as 2x max penalty)
-      - Y_eval: Y with NaN replaced by max observed time
-    """
     max_real_time = np.nanmax(Y)
     timeout_penalty = max_real_time * 2
     Y_filled = np.nan_to_num(Y, nan=timeout_penalty)
