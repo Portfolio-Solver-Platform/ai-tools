@@ -1,75 +1,49 @@
-from sklearn.metrics import accuracy_score
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.pipeline import Pipeline
-import joblib
-import joblib
+from pathlib import Path
+
 import numpy as np
-from sklearn.pipeline import Pipeline
+from sklearn.calibration import cross_val_predict
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.model_selection import train_test_split
-
-from sklearn.preprocessing import StandardScaler
-from sklearn.model_selection import GridSearchCV
+from sklearn.preprocessing import PowerTransformer, StandardScaler
+from sklearn.gaussian_process import GaussianProcessClassifier
 from sklearn.model_selection import LeaveOneOut
+from sklearn.gaussian_process.kernels import RBF
+from sklearn.pipeline import Pipeline
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
+from utils.shared_data import get_24_25_data, prepare_labels
+
+bounds = [i*0.01 for i in range(0,99)]
+neighbours = [1,2,3,4,5,7,9,11,13,15,17]
+
+X, Y = get_24_25_data()
+y_labels, Y_eval = prepare_labels(Y)
+
+optimal_time = np.sum(np.min(Y_eval, axis=1))
+print(f"optimal time: {optimal_time}")
+
+for neighbour in neighbours:
+    print(f"\n\n========== Neigbours {neighbour} ==========")
+    gpc = Pipeline([
+        ('scaler', StandardScaler()),
+        ('model', KNeighborsClassifier(n_neighbors=neighbour))
+    ])
+
+    loo = LeaveOneOut()
+    predicted_proba = cross_val_predict(gpc, X, y_labels, method="predict_proba", cv=loo, n_jobs=-1, verbose=1)
+
+    best = np.inf
+    best_bound = 0
+    for bound in bounds: 
+        final_solvers = np.argmax(predicted_proba, axis=1)
+        uncertainty_mask = np.max(predicted_proba,axis=1) < bound
+        final_solvers[uncertainty_mask] = 0
 
 
-
-data = np.load('../data/training_data.npz')
-X = data["X"]
-Y = data["Y"]
-
-max_real_time = np.nanmax(Y)
-timeout_penalty = max_real_time * 1.1 # experiment with scalar
-
-
-Y_filled = np.nan_to_num(Y, nan=timeout_penalty)
-Y_log = np.log(Y_filled)
-y_labels = np.argmin(Y_filled, axis=1)
-print(y_labels)
-
-
-indices = np.arange(len(X))
-X_train, X_test, y_train, y_test, y_times_train, y_times_test = train_test_split(
-    X, y_labels, Y_filled, test_size=0.05, stratify=y_labels,
-)
-
-print(f"Train size: {len(X_train)}, Test size: {len(X_test)}")
-
-knn_pipe = Pipeline([
-    ('scaler', StandardScaler()),
-    ('model', KNeighborsClassifier(n_neighbors=5))
-])
-
-
-knn_pipe.fit(X_train, y_train)
-probs = knn_pipe.predict_proba(X_test)
-
-total_time = 0
-best_possible_time = 0
-correct_solver = 0
-n_test_samples = len(X_test)
-classes = knn_pipe.classes_ 
-
-for i in range(n_test_samples):
-    active_solvers_idx = classes[probs[i] > 0]
-    actual_times = y_times_test[i][active_solvers_idx]
-    print(len(actual_times))
-    # The portfolio time is the best (minimum) time among the active solvers
-    best_solver_idx = np.argmin(y_times_test[i])
-    best_possible_time += y_times_test[i][best_solver_idx]
-    if best_solver_idx in active_solvers_idx:
-        correct_solver += 1
-    best_time = np.min(actual_times)
-    total_time += best_time
-    
-
-
-avg_time = total_time / n_test_samples
-print(f"{correct_solver}/{n_test_samples}")
-print(avg_time)
-print(total_time)
-print(f"Best possible time: {best_possible_time}")
-
-joblib.dump(knn_pipe, 'knn_model.pkl')
-
-
+        row_indices = np.arange(len(Y_eval))
+        times = Y_eval[row_indices, final_solvers]
+        total_time = np.sum(times)
+        if total_time < best:
+            best = total_time
+            best_bound = bound
+    print(f"best bound ({best_bound}): {best}")

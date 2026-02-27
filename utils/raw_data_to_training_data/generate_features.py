@@ -10,30 +10,44 @@ CACHE = "/tmp"
 
 def generate_features_for_everything(problems_path, save_dict):    
     for sub_folder in tqdm(sorted(os.listdir(problems_path))):
+        print(os.path.join(problems_path, sub_folder))
+
         if not os.path.isdir(os.path.join(problems_path, sub_folder)):
+            print("failed")
             continue
-        # print(sub_folder)
+
         files:list[str] = os.listdir(os.path.join(problems_path, sub_folder))
         models:list[str] = [file for file in files if file.endswith('.mzn')]
         instances:list[str] = [file for file in files if file.endswith('.dzn') or file.endswith('.json')]
         sub_folder_path = os.path.join(problems_path, sub_folder)
 
+        n = 0
         if len(instances) == 0:
             for model in models:
                 model_path = os.path.join(sub_folder_path, model)
                 feature = generate_features(model_path, None)
                 if feature is not None:
-                    save_path = model.split(".")[0] + "_"
+                    save_path = ".".join(model.split(".")[:-1]) + "_"
                     save_dict[save_path] = feature
+                    n += 1
+
+                else:
+                    print("fail 2")
         else:
             for model in models:
                 for instance in instances:
                     model_path = os.path.join(sub_folder_path, model)
                     instance_path = os.path.join(sub_folder_path, instance)
                     feature = generate_features(model_path, instance_path)
+
                     if feature is not None:
-                        save_path = model.split(".")[0]  + "_" + instance.split(".")[0]
+                        save_path = ".".join(model.split(".")[:-1])  + "_" + ".".join(instance.split(".")[:-1])
                         save_dict[save_path] = feature
+                        n += 1
+                    else:
+                        print("fail 3")
+        print(n)
+    
                     
 def generate_features(model:str, instance:str|None) -> np.ndarray:
     t = time()
@@ -69,8 +83,8 @@ def generate_features(model:str, instance:str|None) -> np.ndarray:
 
 if __name__ == "__main__":
     save_dict = dict()
-    problems_path = '../24_25_instances'
+    problems_path = '../../24_25_instances'
     generate_features_for_everything(problems_path, save_dict)
-
+    print(len(save_dict))
     with open('features_data.pkl', 'wb') as f:  # 'wb' means write binary
         pickle.dump(save_dict, f)

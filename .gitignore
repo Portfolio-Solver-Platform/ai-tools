@@ -208,4 +208,5 @@ __marimo__/
 
 
 .claude 
-*.pkl
+
+dumb_experiments/
