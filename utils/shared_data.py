@@ -4,18 +4,20 @@ from utils.raw_data_to_training_data.instance_benchmark_to_training_data import 
 
 
 def get_24_25_data():
+    root = Path(__file__).resolve().parent.parent
     benchmark = [
-        Path("/home/sofus/speciale/ai/benchmarks/24-25/cpsat8-benchmark.csv"),
-        Path("/home/sofus/speciale/ai/benchmarks/24-25/best-static-benchmark-restart.csv"),
+        root / "portfolio-benchmarks/24-25/cpsat8-benchmark.csv",
+        root / "portfolio-benchmarks/24-25/best-static-benchmark-restart.csv",
     ]
     instances = Path("/home/sofus/speciale/ai/24_25_instances")
     return convert(benchmark, instances)
 
 
 def get_23_data():
+    root = Path(__file__).resolve().parent.parent
     benchmark = [
-        Path("/home/sofus/speciale/ai/benchmarks/2023/cpsat8-benchmark-2023.csv"),
-        Path("/home/sofus/speciale/ai/benchmarks/2023/best-static-benchmark-2023-restart.csv"),
+        root / "portfolio-benchmarks/2023/cpsat8-benchmark-2023.csv",
+        root / "portfolio-benchmarks/2023/best-static-benchmark-2023-restart.csv",
     ]
     instances = Path("/home/sofus/speciale/ai/23_instances")
     return convert(benchmark, instances)
