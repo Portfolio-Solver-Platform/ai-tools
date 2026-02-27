@@ -15,7 +15,7 @@ def get_24_25_data():
 def get_23_data():
     benchmark = [
         Path("/home/sofus/speciale/ai/benchmarks/2023/cpsat8-benchmark-2023.csv"),
-        Path("/home/sofus/speciale/ai/benchmarks/2023/best-static-benchmark-2023.csv"),
+        Path("/home/sofus/speciale/ai/benchmarks/2023/best-static-benchmark-2023-restart.csv"),
     ]
     instances = Path("/home/sofus/speciale/ai/23_instances")
     return convert(benchmark, instances)
