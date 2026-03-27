@@ -54,7 +54,7 @@ def build_key_map():
 
 def default_objective_regex(problem: str) -> str | None:
     """Returns the regex to extract the objective from default/raw output for a given problem."""
-    if problem == 'monitor':
+    if 'monitor' in problem:
         return r'monitors\s*=\s*([\-0-9]+)'
     if problem == 'harmony':
         return r'objective:\s*([\-0-9]+)'
@@ -72,6 +72,7 @@ def parse_out_file(path: Path, problem: str = ''):
     objective = None
     status = None
     last_solution_objective = None
+    warned_multi_source = False
 
     for line in lines:
         line = line.strip()
@@ -112,9 +113,12 @@ def parse_out_file(path: Path, problem: str = ''):
                     if m:
                         obj_from_default = float(m.group(1))
 
-            found = [x for x in [obj_from_json, obj_from_dzn, obj_from_default] if x is not None]
+            found = {k: v for k, v in [('json', obj_from_json), ('dzn', obj_from_dzn), ('default', obj_from_default)] if v is not None}
             if len(found) > 1:
-                print(f'WARNING: multiple objective sources found in {path.name}: json={obj_from_json}, dzn={obj_from_dzn}, default={obj_from_default}')
+                vals = set(float(v) for v in found.values())
+                if len(vals) > 1 and not warned_multi_source:
+                    print(f'WARNING: disagreeing objective sources in {path.name}: {found}')
+                    warned_multi_source = True
 
             if obj_from_json is not None:
                 last_solution_objective = obj_from_json
