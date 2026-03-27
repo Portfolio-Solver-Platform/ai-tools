@@ -27,7 +27,7 @@ STATUS_MAP = {
 
 
 def build_key_map():
-    """Returns {instance_key: (year, model, instance_name)}"""
+    """Returns {instance_key: (year, model, instance_name, problem)}"""
     key_map = {}
     for year_folder in YEAR_FOLDERS:
         path = DATA_PATH / year_folder
@@ -44,11 +44,11 @@ def build_key_map():
                 for m in models:
                     for i in instances:
                         key = m.stem + '_' + i.stem
-                        key_map[key] = (year, m.stem, i.stem)
+                        key_map[key] = (year, m.stem, i.stem, prob.name)
             else:
                 for m in models:
                     key = m.stem + '_'
-                    key_map[key] = (year, m.stem, '')
+                    key_map[key] = (year, m.stem, '', prob.name)
     return key_map
 
 
@@ -132,7 +132,7 @@ def main():
             skipped += 1
             continue
 
-        year, model, instance_name = key_map[instance_key]
+        year, model, instance_name, problem = key_map[instance_key]
 
         time_ms, objective, status = parse_out_file(file_path)
 
@@ -140,6 +140,7 @@ def main():
             'solver': solver,
             'cores': cores,
             'year': year,
+            'problem': problem,
             'model': model,
             'name': instance_name,
             'time_ms': time_ms,
@@ -151,7 +152,7 @@ def main():
 
     print(f'Writing {OUT_PATH}')
     with open(OUT_PATH, 'w', newline='') as f:
-        writer = csv.DictWriter(f, fieldnames=['solver', 'cores', 'year', 'model', 'name', 'time_ms', 'objective', 'status'])
+        writer = csv.DictWriter(f, fieldnames=['solver', 'cores', 'year', 'problem', 'model', 'name', 'time_ms', 'objective', 'status'])
         writer.writeheader()
         writer.writerows(rows)
 
