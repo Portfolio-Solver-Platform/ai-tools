@@ -52,7 +52,20 @@ def build_key_map():
     return key_map
 
 
-def parse_out_file(path: Path):
+def default_objective_regex(problem: str) -> str | None:
+    """Returns the regex to extract the objective from default/raw output for a given problem."""
+    if problem == 'monitor':
+        return r'monitors\s*=\s*([\-0-9]+)'
+    if problem == 'harmony':
+        return r'objective:\s*([\-0-9]+)'
+    if problem == 'hitori':
+        return r'obj\s*=\s*([\-0-9]+)'
+    if problem == 'black-hole':
+        return None  # SAT problem, no objective
+    return r'\bobjective\s*=\s*([\-0-9]+)'
+
+
+def parse_out_file(path: Path, problem: str = ''):
     """Returns (time_ms, objective, status) from .out file."""
     lines = path.read_text(encoding='utf-8', errors='replace').strip().split('\n')
     time_ms = None
@@ -90,13 +103,25 @@ def parse_out_file(path: Path):
                 if m:
                     obj_from_dzn = float(m.group(1))
 
-            if obj_from_json is not None and obj_from_dzn is not None:
-                print(f'WARNING: both json and dzn objective found in {path.name}, using json')
+            obj_from_default = None
+            default_out = out.get('default') or out.get('raw')
+            if default_out:
+                pattern = default_objective_regex(problem)
+                if pattern:
+                    m = re.search(pattern, default_out)
+                    if m:
+                        obj_from_default = float(m.group(1))
+
+            found = [x for x in [obj_from_json, obj_from_dzn, obj_from_default] if x is not None]
+            if len(found) > 1:
+                print(f'WARNING: multiple objective sources found in {path.name}: json={obj_from_json}, dzn={obj_from_dzn}, default={obj_from_default}')
 
             if obj_from_json is not None:
                 last_solution_objective = obj_from_json
             elif obj_from_dzn is not None:
                 last_solution_objective = obj_from_dzn
+            elif obj_from_default is not None:
+                last_solution_objective = obj_from_default
         elif t == 'status':
             raw_status = d.get('status', '')
             status = STATUS_MAP.get(raw_status, raw_status)
@@ -134,7 +159,7 @@ def main():
 
         year, model, instance_name, problem = key_map[instance_key]
 
-        time_ms, objective, status = parse_out_file(file_path)
+        time_ms, objective, status = parse_out_file(file_path, problem)
 
         rows.append({
             'solver': solver,
