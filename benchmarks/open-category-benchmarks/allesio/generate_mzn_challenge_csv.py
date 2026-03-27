@@ -4,6 +4,7 @@ a single CSV: mzn-challenge.csv with columns:
   solver, cores, year, name, model, time_ms, objective, status
 """
 import json
+import re
 from pathlib import Path
 import csv
 
@@ -71,14 +72,31 @@ def parse_out_file(path: Path):
         t = d.get('type')
         if t == 'solution':
             out = d.get('output', {})
+
+            obj_from_json = None
             json_out = out.get('json')
             if json_out:
                 try:
                     obj_data = json.loads(json_out) if isinstance(json_out, str) else json_out
                     if '_objective' in obj_data:
-                        last_solution_objective = obj_data['_objective']
+                        obj_from_json = obj_data['_objective']
                 except (json.JSONDecodeError, TypeError):
                     pass
+
+            obj_from_dzn = None
+            dzn_out = out.get('dzn')
+            if dzn_out:
+                m = re.search(r'_objective\s*=\s*(-?[\d.]+)\s*;', dzn_out)
+                if m:
+                    obj_from_dzn = float(m.group(1))
+
+            if obj_from_json is not None and obj_from_dzn is not None:
+                print(f'WARNING: both json and dzn objective found in {path.name}, using json')
+
+            if obj_from_json is not None:
+                last_solution_objective = obj_from_json
+            elif obj_from_dzn is not None:
+                last_solution_objective = obj_from_dzn
         elif t == 'status':
             raw_status = d.get('status', '')
             status = STATUS_MAP.get(raw_status, raw_status)
