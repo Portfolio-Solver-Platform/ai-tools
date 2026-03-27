@@ -118,16 +118,16 @@ def main():
 
         time_ms, objective, status = parse_out_file(file_path)
 
-            rows.append({
-                'solver': solver,
-                'cores': cores,
-                'year': year,
-                'model': model,
-                'name': instance_name,
-                'time_ms': time_ms,
-                'objective': objective,
-                'status': status,
-            })
+        rows.append({
+            'solver': solver,
+            'cores': cores,
+            'year': year,
+            'model': model,
+            'name': instance_name,
+            'time_ms': time_ms,
+            'objective': objective,
+            'status': status,
+        })
 
     print(f'  {len(rows)} rows extracted, {skipped} files skipped')
 
