@@ -1,15 +1,13 @@
 """
-Reads mzn_challenge_results.zip directly (no extraction) and produces
+Reads an extracted mzn_challenge_results folder and produces
 a single CSV: mzn-challenge.csv with columns:
   solver, cores, year, name, model, time_ms, objective, status
 """
 import json
-import os
-import zipfile
 from pathlib import Path
 import csv
 
-ZIP_PATH = Path('/Users/sofus/speciale/ai/mzn_challenge_results.zip')
+RESULTS_PATH = Path('/Users/sofus/speciale/ai/mzn_challenge_results')
 DATA_PATH = Path('/Users/sofus/speciale/ai/data')
 OUT_PATH = Path(__file__).parent / 'mzn-challenge.csv'
 
@@ -53,9 +51,9 @@ def build_key_map():
     return key_map
 
 
-def parse_out_file(content: bytes):
-    """Returns (time_ms, objective, status) from .out file content."""
-    lines = content.decode('utf-8', errors='replace').strip().split('\n')
+def parse_out_file(path: Path):
+    """Returns (time_ms, objective, status) from .out file."""
+    lines = path.read_text(encoding='utf-8', errors='replace').strip().split('\n')
     time_ms = None
     objective = None
     status = None
@@ -95,33 +93,30 @@ def main():
     key_map = build_key_map()
     print(f'  {len(key_map)} keys across {len(YEAR_FOLDERS)} year folders')
 
-    print(f'Reading zip: {ZIP_PATH}')
+    print(f'Reading results folder: {RESULTS_PATH}')
     rows = []
     skipped = 0
 
-    with zipfile.ZipFile(ZIP_PATH) as z:
-        out_files = [n for n in z.namelist() if n.endswith('.out')]
-        print(f'  {len(out_files)} .out files found')
+    out_files = list(RESULTS_PATH.glob('*.out'))
+    print(f'  {len(out_files)} .out files found')
 
-        for name in out_files:
-            basename = name.split('/')[-1]
-            parts = basename.split('-sep-')
-            if len(parts) < 3:
-                skipped += 1
-                continue
+    for file_path in out_files:
+        parts = file_path.name.split('-sep-')
+        if len(parts) < 3:
+            skipped += 1
+            continue
 
-            instance_key = parts[0]
-            solver = parts[1]
-            cores = parts[2].replace('.out', '')
+        instance_key = parts[0]
+        solver = parts[1]
+        cores = parts[2].replace('.out', '')
 
-            if instance_key not in key_map:
-                skipped += 1
-                continue
+        if instance_key not in key_map:
+            skipped += 1
+            continue
 
-            year, model, instance_name = key_map[instance_key]
+        year, model, instance_name = key_map[instance_key]
 
-            content = z.read(name)
-            time_ms, objective, status = parse_out_file(content)
+        time_ms, objective, status = parse_out_file(file_path)
 
             rows.append({
                 'solver': solver,
