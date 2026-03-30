@@ -8,7 +8,7 @@ gecode,1,2024,tiny-cvrp,TinyCVRP_ExactlyOneSolution,easy_instance_04,,478.0,
 portfolio,8,2024,community-detection,community-detection,mexican.s26.k4,15648,715070,Optimal
 portfolio,8,2024,word-equations,word_equations_01_track_123-int,,287,,Unsatisfiable
 cp-sat,8,2025,black-hole,black-hole,layout_25,,,
-cp-sat,8,2024,monitor-placement-1id,monitor_1id,igp_weight_based_rocketfuel_rf1755_real_hard,132650,,Optimal
+cp-sat,8,2024,monitor-placement-1id,monitor_1id,igp_weight_based_rocketfuel_rf1755_real_hard,132650,36.0,Optimal
 Huub,1,2025,atsp,atsp,instance14_0p25,1201167,,Unknown
 CPLEX,4,2025,proteindesign12,wcsp,1UBI.13p.9aa.usingEref_self_x,,5323.0,
 cp-sat,8,2024,triangular,triangular,n11,,22.0,
@@ -106,7 +106,7 @@ CPLEX,4,2025,atsp,atsp,instance20_0p35,,7205166.0,
 cp-sat,1,2025,gt-sort,gt-sort,n13_ub20_50.0_BEST,1200012,,Unknown
 CPLEX,1,2025,carpet-cutting,cc_base,cc_rnd_8_1,,990.0,
 cp-sat,1,2024,yumi-dynamic,yumi-dynamic,p_4_GG_GG_yumi_grid_setup_5_5_zones,503120,468.0,Optimal
-CPLEX,2,2024,monitor-placement-1id,monitor_1id,igp_weight_based_rocketfuel_rf6461_real_hard,975533,,Optimal
+CPLEX,2,2024,monitor-placement-1id,monitor_1id,igp_weight_based_rocketfuel_rf6461_real_hard,975533,68.0,Optimal
 choco,1,2024,community-detection,community-detection,adjourn.s200.k3,5079,-892763,Optimal
 Huub,1,2024,community-detection,community-detection,Zakhary.s12.k3,765877,595004,Optimal
 CPLEX,8,2024,train-scheduling,trains,trains05,1558,304.0,Optimal
@@ -129,7 +129,7 @@ choco,8,2025,work-task-variation,work-task-variation,generated-seed-10-length-12
 portfolio,8,2024,tiny-cvrp,TinyCVRP_ExactlyOneSolution,hard_instance_18,,6100,Unknown
 CPLEX,8,2024,portal,portal,random_10_9_10,21994,9.0,Optimal
 choco,2,2024,monitor-placement-1id,monitor_1id,igp_weight_based_rocketfuel_rf1755_real_hard,132483,36,Optimal
-gecode,2,2024,monitor-placement-1id,monitor_1id,igp_weight_based_rocketfuel_rf1755_real_hard,190952,,Optimal
+gecode,2,2024,monitor-placement-1id,monitor_1id,igp_weight_based_rocketfuel_rf1755_real_hard,190952,36.0,Optimal
 Huub,1,2024,hoist-benchmark,hoist-benchmark,PU_2_2_3,116123,448,Optimal
 gecode,4,2025,carpet-cutting,cc_base,cc_rnd_8_1,,1110.0,
 gecode,2,2024,community-detection,community-detection,mexican.s26.k4,13117,715070.0,Optimal
@@ -338,7 +338,7 @@ gecode,4,2025,EchoSched,JSP0,14-10-0-2_3,,11878.0,
 gecode,2,2024,harmony,harmony,minuet,,48.0,
 CPLEX,4,2024,hoist-benchmark,hoist-benchmark,PU_2_4_3,35117,295.0,Optimal
 CPLEX,2,2025,skill-allocation,skill_allocation_only,skill_allocation_mzn_1m_2,24074,2.0,Optimal
-gecode,8,2024,monitor-placement-1id,monitor_1id,hop_counting_based_zoo_Forthnet,30261,,Optimal
+gecode,8,2024,monitor-placement-1id,monitor_1id,hop_counting_based_zoo_Forthnet,30261,52.0,Optimal
 gecode,2,2025,is,model,1vERFuvviS,425,376832.0,Optimal
 choco,1,2024,harmony,harmony,brother,,36,
 choco,1,2024,portal,portal,small_3,4991,2,Optimal
@@ -353,7 +353,7 @@ gecode,8,2025,hitori,hitori,h11-1,1200066,,Unknown
 Picat,1,2024,word-equations,word_equations_02_track_8-int,,1426,2.0,Optimal
 chuffed,1,2024,yumi-dynamic,yumi-dynamic,p_4_GG_GG_yumi_grid_setup_5_5_zones,560868,468.0,Optimal
 gecode,8,2025,ihtc-2024-kletzander,model4_opt,test05,1200180,,Unknown
-gecode,8,2024,monitor-placement-1id,monitor_1id,hop_counting_based_caida_139203,1137119,,Optimal
+gecode,8,2024,monitor-placement-1id,monitor_1id,hop_counting_based_caida_139203,1137119,126.0,Optimal
 gecode,4,2025,atsp,atsp,instance20_0p35,1200116,,Unknown
 gecode,1,2025,mondoku,mondoku-gcc-model-balance,8-8-4,351,0.0,Optimal
 chuffed,1,2025,proteindesign12,wcsp,2TRX.11p.8aa.usingEref_self_x,187131,5912.0,Optimal
@@ -417,7 +417,7 @@ Picat,1,2025,work-task-variation,work-task-variation,generated-seed-10-length-12
 cp-sat,8,2025,EchoSched,JSP0,13-14-0-2_6,163541,15144.0,Optimal
 choco,2,2024,yumi-dynamic,yumi-dynamic,p_4_GG_GG_yumi_grid_setup_5_5_zones,473291,468,Optimal
 gecode,1,2024,hoist-benchmark,hoist-benchmark,PU_2_4_3,1200056,,Unknown
-chuffed,1,2024,monitor-placement-1id,monitor_1id,igp_weight_based_rocketfuel_rf1755_real_hard,142177,,Optimal
+chuffed,1,2024,monitor-placement-1id,monitor_1id,igp_weight_based_rocketfuel_rf1755_real_hard,142177,36.0,Optimal
 CPLEX,1,2025,ihtc-2024-kletzander,model4_opt,i02,1200539,,Unknown
 CPLEX,8,2025,cgt,cgt,cgt_5_h27_r0.05_s0.8_0,915538,-199790.0,Optimal
 portfolio,8,2024,monitor-placement-1id,monitor_1id,hop_counting_based_zoo_Forthnet,32580,52,Optimal
@@ -454,7 +454,7 @@ choco,4,2025,products-and-shelves,product-and-shelves,ps-25-03,,4,
 Huub,1,2024,aircraft-disassembly,aircraft,B737NG-600-01-Anon.json,,3308750,
 choco,2,2024,network_50_cstr,efm_cstr,MODEL2204190004,43922,3,Optimal
 choco,4,2025,gt-sort,gt-sort,n13_ub20_50.0_BEST,4103,,Unknown
-gecode,2,2024,monitor-placement-1id,monitor_1id,igp_weight_based_rocketfuel_rf6461_real_hard,,,
+gecode,2,2024,monitor-placement-1id,monitor_1id,igp_weight_based_rocketfuel_rf6461_real_hard,,68.0,
 choco,1,2025,groupsplitter,group,u12g2pref2,,222,
 gecode,1,2024,peacable_queens,peaceable_queens_mznc2021,pq_n9,,11.0,
 Picat,1,2024,compression,compression,bin_10,1181,28.0,Optimal
@@ -533,7 +533,7 @@ cp-sat,1,2024,network_50_cstr,efm_cstr,MODEL2204190004,36597,3.0,Optimal
 gecode,2,2025,cgt,cgt,cgt_3_h39_r0.05_s1_3,,161546.0,
 CPLEX,4,2025,black-hole,black-hole,layout_25,,,
 gecode,8,2024,cable-tree-wiring,ctw,R193,,53157258.0,
-cp-sat,1,2024,monitor-placement-1id,monitor_1id,hop_counting_based_zoo_Forthnet,32013,,Optimal
+cp-sat,1,2024,monitor-placement-1id,monitor_1id,hop_counting_based_zoo_Forthnet,32013,52.0,Optimal
 Picat,1,2024,compression,compression,bin_8,753,26.0,Optimal
 CPLEX,4,2024,neighbours,neighbours-rect,neightbours-new-6,8830,76.0,Optimal
 CPLEX,8,2025,atsp,atsp,instance4_0p15,,567501.0,
@@ -606,7 +606,7 @@ portfolio,8,2025,EchoSched,JSP0,14-10-0-2_1,468661,11626,Optimal
 CPLEX,8,2024,concert-hall-cap,concert-hall-cap,concert_60_50,26900,3423044.0,Optimal
 CPLEX,8,2025,cgt,cgt,cgt_8_h16_r0.05_s0.5_3,9278,-124246.0,Optimal
 Huub,1,2025,products-and-shelves,product-and-shelves,ps-50-09,157643,20,Optimal
-cp-sat,1,2024,monitor-placement-1id,monitor_1id,igp_weight_based_rocketfuel_rf6461_real_hard,817727,,Optimal
+cp-sat,1,2024,monitor-placement-1id,monitor_1id,igp_weight_based_rocketfuel_rf6461_real_hard,817727,68.0,Optimal
 choco,2,2025,tsptw,tsptw,n80w180.003,1200518,,Unknown
 Huub,1,2024,compression,compression,bin_8,245,26,Optimal
 gecode,2,2025,skill-allocation,skill_allocation_only,skill_allocation_mzn_3m_3,1203616,,Unknown
@@ -826,7 +826,7 @@ choco,1,2025,black-hole,black-hole,layout_17,,,
 choco,1,2025,mondoku,mondoku-gcc-model-balance,12-12-8,,3,
 CPLEX,8,2024,tiny-cvrp,TinyCVRP_ExactlyOneSolution,medium_instance_06,260819,1585.0,Optimal
 gecode,1,2024,word-equations,word_equations_01_track_140-int,,1446,3.0,Optimal
-gecode,4,2024,monitor-placement-1id,monitor_1id,hop_counting_based_zoo_Forthnet,31113,,Optimal
+gecode,4,2024,monitor-placement-1id,monitor_1id,hop_counting_based_zoo_Forthnet,31113,52.0,Optimal
 choco,8,2024,monitor-placement-1id,monitor_1id,igp_weight_based_rocketfuel_rf6461_real_hard,813473,68,Optimal
 chuffed,1,2025,skill-allocation,skill_allocation_only,skill_allocation_mzn_5d_1,2667,2.0,Optimal
 Huub,1,2024,compression,compression,lipsum_10,,282,
@@ -899,11 +899,11 @@ CPLEX,4,2025,black-hole,black-hole,layout_17,1200138,,Unknown
 portfolio,8,2025,skill-allocation,skill_allocation_only,skill_allocation_mzn_3m_3,880667,2,Optimal
 CPLEX,2,2025,carpet-cutting,cc_base,cc_rnd_12_3,,1270.0,
 Picat,1,2025,ihtc-2024-marte,model,i01,,7120.0,
-cp-sat,8,2024,monitor-placement-1id,monitor_1id,igp_weight_based_defo_rf6461_real_hard,790261,,Optimal
+cp-sat,8,2024,monitor-placement-1id,monitor_1id,igp_weight_based_defo_rf6461_real_hard,790261,68.0,Optimal
 choco,2,2025,tower,tower,tower_070_070_15_070-02,6815,70,Optimal
 choco,4,2025,carpet-cutting,cc_base,cc_rnd_8_1,,990,
 gecode,2,2025,carpet-cutting,cc_base,cc_rnd_16_1,,1890.0,
-cp-sat,8,2024,monitor-placement-1id,monitor_1id,igp_weight_based_rocketfuel_rf6461_real_hard,803870,,Optimal
+cp-sat,8,2024,monitor-placement-1id,monitor_1id,igp_weight_based_rocketfuel_rf6461_real_hard,803870,68.0,Optimal
 gecode,1,2025,work-task-variation,work-task-variation,generated-seed-8-length-12-open-10-workers-10-block-15,,2355.0,
 portfolio,8,2024,concert-hall-cap,concert-hall-cap,concert_150_20,4949,2703151,Optimal
 CPLEX,4,2025,skill-allocation,skill_allocation_only,skill_allocation_mzn_2m_2,,3.0,
@@ -931,7 +931,7 @@ Picat,1,2024,accap,accap,accap_a10_f80_t50,967396,108.0,Optimal
 CPLEX,8,2025,stripboard,stripboard,stripboard_w10_h10_l12_c4_n24,9529,45.0,Optimal
 gecode,1,2025,hitori,hitori,h14-1,1200103,,Unknown
 cp-sat,8,2024,harmony,harmony,ode,1438,36.0,Optimal
-chuffed,1,2024,monitor-placement-1id,monitor_1id,hop_counting_based_zoo_Forthnet,32514,,Optimal
+chuffed,1,2024,monitor-placement-1id,monitor_1id,hop_counting_based_zoo_Forthnet,32514,52.0,Optimal
 cp-sat,8,2025,work-task-variation,work-task-variation,generated-seed-3-length-10-open-8-workers-12-block-15,170999,193.0,Optimal
 gecode,8,2024,neighbours,neighbours-rect,neightbours-new-6,,76.0,
 cp-sat,8,2025,cgt,cgt,cgt_3_h39_r0.05_s1_3,,-185480.0,
@@ -941,7 +941,7 @@ CPLEX,8,2025,skill-allocation,skill_allocation_only,skill_allocation_mzn_2m_2,,3
 gecode,2,2025,ihtc-2024-kletzander,model4_opt,test05,1200201,,Unknown
 choco,8,2025,hitori,hitori,h20-2,1201119,,Unknown
 cp-sat,1,2025,gt-sort,gt-sort,n9_ub10_50.0_BEST,236622,110.0,Optimal
-gecode,1,2024,monitor-placement-1id,monitor_1id,igp_weight_based_rocketfuel_rf6461_real_hard,,,
+gecode,1,2024,monitor-placement-1id,monitor_1id,igp_weight_based_rocketfuel_rf6461_real_hard,,68.0,
 Huub,1,2025,proteindesign12,wcsp,1HZ5.12p.9aa.usingEref_self,28725,1473,Optimal
 portfolio,8,2024,hoist-benchmark,hoist-benchmark,PU_2_4_3,9950,295,Optimal
 choco,4,2025,work-task-variation,work-task-variation,generated-seed-4-length-14-open-12-workers-12-block-15,233618,2741,Optimal
@@ -1007,7 +1007,7 @@ choco,4,2025,EchoSched,JSP0,14-10-0-2_1,,11626,
 Huub,1,2025,proteindesign12,wcsp,1HZ5.12p.19aa.usingEref_self,,3388,
 choco,1,2024,train-scheduling,trains,trains15,2346,10,Optimal
 CPLEX,8,2024,hoist-benchmark,hoist-benchmark,PU_2_4_3,27067,295.0,Optimal
-gecode,2,2024,monitor-placement-1id,monitor_1id,igp_weight_based_defo_rf6461_real_hard,,,
+gecode,2,2024,monitor-placement-1id,monitor_1id,igp_weight_based_defo_rf6461_real_hard,,68.0,
 choco,8,2024,accap,accap,accap_a10_f80_t50,,110,
 Huub,1,2024,yumi-dynamic,yumi-dynamic,p_5_GG_GGG_yumi_grid_setup_5_5_zones,,556,
 chuffed,1,2025,gt-sort,gt-sort,n9_ub10_50.0_BEST,924142,110.0,Optimal
@@ -1050,13 +1050,13 @@ choco,2,2024,neighbours,neighbours-rect,neightbours-new-7,,1330,
 Picat,1,2024,train-scheduling,trains,trains12,10421,291.0,Optimal
 choco,4,2024,harmony,harmony,twinkle,1111514,30,Optimal
 Huub,1,2024,aircraft-disassembly,aircraft,B737NG-600-09-Anon.json,24388,,Unsatisfiable
-gecode,4,2024,monitor-placement-1id,monitor_1id,hop_counting_based_caida_139203,1173559,,Optimal
+gecode,4,2024,monitor-placement-1id,monitor_1id,hop_counting_based_caida_139203,1173559,126.0,Optimal
 choco,2,2025,ihtc-2024-marte,model,i03,,11520,
 CPLEX,4,2025,fbd1,FBD1,FBDk06,,103.0,
 choco,8,2024,train-scheduling,trains,trains18,668061,386,Optimal
 portfolio,8,2025,proteindesign12,wcsp,1HZ5.12p.9aa.usingEref_self,22451,1473,Optimal
 CPLEX,8,2025,tower,tower,tower_070_070_15_070-08,,57.0,
-gecode,8,2024,monitor-placement-1id,monitor_1id,igp_weight_based_defo_rf6461_real_hard,,,
+gecode,8,2024,monitor-placement-1id,monitor_1id,igp_weight_based_defo_rf6461_real_hard,,68.0,
 Huub,1,2025,skill-allocation,skill_allocation_only,skill_allocation_mzn_3m_3,,50,
 CPLEX,4,2025,tower,tower,tower_050_050_10_050-03,30153,45.0,Optimal
 cp-sat,8,2024,fox-geese-corn,foxgeesecorn,foxgeesecorn_61,4340,32.0,Optimal
@@ -1103,7 +1103,7 @@ Picat,1,2024,graph-clear,graph_clear_cp,planar_n20_seed2022_16,200576,56.0,Optim
 CPLEX,1,2025,atsp,atsp,instance1_0p05,233,657504.0,Optimal
 gecode,8,2025,groupsplitter,group,u15g3pref0,,268.0,
 gecode,1,2024,aircraft-disassembly,aircraft,B737NG-600-04-Anon.json,,12711250.0,
-CPLEX,4,2024,monitor-placement-1id,monitor_1id,hop_counting_based_zoo_Forthnet,40318,,Optimal
+CPLEX,4,2024,monitor-placement-1id,monitor_1id,hop_counting_based_zoo_Forthnet,40318,52.0,Optimal
 choco,1,2025,gt-sort,gt-sort,n13_ub20_50.0_BEST,4116,,Unknown
 Picat,1,2024,harmony,harmony,brother,10843,36.0,Optimal
 CPLEX,4,2024,hoist-benchmark,hoist-benchmark,PU_3_2_1,,829.0,
@@ -1122,7 +1122,7 @@ Picat,1,2025,proteindesign12,wcsp,1HZ5.12p.19aa.usingEref_self,,3528.0,
 portfolio,8,2025,mondoku,mondoku-gcc-model-balance,12-12-8,487,1,Optimal
 cp-sat,1,2024,triangular,triangular,n9,15059,17.0,Optimal
 choco,2,2025,tower,tower,tower_500_500_50_300-05,,175,
-CPLEX,8,2024,monitor-placement-1id,monitor_1id,hop_counting_based_zoo_Forthnet,52328,,Optimal
+CPLEX,8,2024,monitor-placement-1id,monitor_1id,hop_counting_based_zoo_Forthnet,52328,52.0,Optimal
 gecode,4,2025,gt-sort,gt-sort,n9_ub10_50.0_BEST,,112.0,
 CPLEX,2,2024,word-equations,word_equations_03_track_31-int,,1201339,,Unknown
 chuffed,1,2025,skill-allocation,skill_allocation_only,skill_allocation_mzn_3m_3,,13.0,
@@ -1160,10 +1160,10 @@ choco,4,2025,gt-sort,gt-sort,n7_ub20_75.0_BEST,1003,,Unknown
 gecode,4,2024,network_50_cstr,efm_cstr,MODEL2204190004,28177,3.0,Optimal
 gecode,1,2025,gt-sort,gt-sort,n7_ub20_75.0_BEST,367426,79.0,Optimal
 gecode,1,2025,atsp,atsp,instance4_0p15,,1726034.0,
-CPLEX,2,2024,monitor-placement-1id,monitor_1id,igp_weight_based_rocketfuel_rf1755_real_hard,179920,,Optimal
+CPLEX,2,2024,monitor-placement-1id,monitor_1id,igp_weight_based_rocketfuel_rf1755_real_hard,179920,36.0,Optimal
 choco,2,2025,EchoSched,JSP0,13-14-0-2_6,,15154,
 Huub,1,2024,cable-tree-wiring,ctw,A022,46438,5153158,Optimal
-gecode,2,2024,monitor-placement-1id,monitor_1id,hop_counting_based_caida_139203,1194510,,Optimal
+gecode,2,2024,monitor-placement-1id,monitor_1id,hop_counting_based_caida_139203,1194510,126.0,Optimal
 choco,8,2025,hitori,hitori,h14-1,1201074,,Unknown
 Picat,1,2024,word-equations,word_equations_01_track_140-int,,1641,3.0,Optimal
 choco,2,2024,hoist-benchmark,hoist-benchmark,PU_2_2_3,,489,
@@ -1217,14 +1217,14 @@ portfolio,8,2025,products-and-shelves,product-and-shelves,ps-25-03,3097,4,Optima
 cp-sat,1,2025,ihtc-2024-marte,model,i03,,12285.0,
 CPLEX,4,2024,community-detection,community-detection,adjourn.s200.k3,1173,-892763.0,Optimal
 gecode,1,2024,tiny-cvrp,TinyCVRP_ExactlyOneSolution,medium_instance_06,1200083,,Unknown
-gecode,8,2024,monitor-placement-1id,monitor_1id,igp_weight_based_rocketfuel_rf6461_real_hard,,,
+gecode,8,2024,monitor-placement-1id,monitor_1id,igp_weight_based_rocketfuel_rf6461_real_hard,,68.0,
 gecode,8,2025,skill-allocation,skill_allocation_only,skill_allocation_mzn_2m_2,1202680,,Unknown
 choco,4,2025,tower,tower,tower_070_070_15_070-02,14137,70,Optimal
 CPLEX,1,2025,EchoSched,JSP0,14-10-0-2_1,569492,11626.0,Optimal
 Huub,1,2024,harmony,harmony,brother,676,,Error
 CPLEX,2,2025,cgt,cgt,cgt_3_h39_r0.05_s0.5_0,,-191046.0,
 gecode,8,2024,neighbours,neighbours-rect,neightbours-new-7,1200088,,Unknown
-chuffed,1,2024,monitor-placement-1id,monitor_1id,igp_weight_based_defo_rf6461_real_hard,827734,,Optimal
+chuffed,1,2024,monitor-placement-1id,monitor_1id,igp_weight_based_defo_rf6461_real_hard,827734,68.0,Optimal
 portfolio,8,2024,graph-clear,graph_clear_cp,planar_n20_seed2022_14,38214,54,Optimal
 CPLEX,8,2024,harmony,harmony,brother,911066,36.0,Optimal
 cp-sat,8,2024,portal,portal,random_10_9_10,2954,9.0,Optimal
@@ -1245,7 +1245,7 @@ CPLEX,2,2024,compression,compression,bin_20,,48.0,
 gecode,8,2025,ihtc-2024-marte,model,i06,,13647.0,
 chuffed,1,2024,graph-clear,graph_clear_cp,planar_n20_seed2022_16,32978,56.0,Optimal
 choco,4,2025,skill-allocation,skill_allocation_only,skill_allocation_mzn_2w_2,,5,
-gecode,4,2024,monitor-placement-1id,monitor_1id,igp_weight_based_rocketfuel_rf6461_real_hard,,,
+gecode,4,2024,monitor-placement-1id,monitor_1id,igp_weight_based_rocketfuel_rf6461_real_hard,,68.0,
 cp-sat,8,2025,fbd1,FBD1,FBDk07,165244,130.0,Optimal
 CPLEX,2,2025,products-and-shelves,product-and-shelves,toy,7843,6.0,Optimal
 gecode,8,2025,carpet-cutting,cc_base,cc_rnd_16_1,,1890.0,
@@ -1314,7 +1314,7 @@ gecode,4,2025,groupsplitter,group,u12g2pref2,,214.0,
 choco,4,2025,carpet-cutting,cc_base,cc_rnd_4_4,1315,570,Optimal
 gecode,2,2024,compression,compression,bin_20,,38.0,
 choco,2,2025,work-task-variation,work-task-variation,generated-seed-10-length-12-open-10-workers-12-block-5,229811,9534,Optimal
-Picat,1,2024,monitor-placement-1id,monitor_1id,igp_weight_based_defo_rf6461_real_hard,793063,,Optimal
+Picat,1,2024,monitor-placement-1id,monitor_1id,igp_weight_based_defo_rf6461_real_hard,793063,68.0,Optimal
 gecode,1,2025,stripboard,stripboard,stripboard_w10_h10_l12_c4_n24,704320,45.0,Optimal
 choco,1,2025,EchoSched,JSP0,14-10-0-2_3,,11816,
 cp-sat,1,2024,compression,compression,lipsum_10,,195.0,
@@ -1396,7 +1396,7 @@ chuffed,1,2024,graph-clear,graph_clear_cp,planar_n30_seed2022_4,,84.0,
 choco,2,2025,groupsplitter,group,u15g5pref1,,439,
 CPLEX,8,2025,hitori,hitori,h20-2,,1500.0,
 choco,8,2024,word-equations,word_equations_03_track_31-int,,1201115,,Unknown
-CPLEX,4,2024,monitor-placement-1id,monitor_1id,igp_weight_based_defo_rf6461_real_hard,935938,,Optimal
+CPLEX,4,2024,monitor-placement-1id,monitor_1id,igp_weight_based_defo_rf6461_real_hard,935938,68.0,Optimal
 choco,2,2025,cgt,cgt,cgt_3_h39_r0.05_s1_3,,3257,
 gecode,1,2024,hoist-benchmark,hoist-benchmark,PU_3_2_1,1200098,,Unknown
 Huub,1,2025,hitori,hitori,h20-2,1200232,,Unknown
@@ -1418,7 +1418,7 @@ CPLEX,4,2024,compression,compression,bin_7,3017,25.0,Optimal
 chuffed,1,2025,ihtc-2024-marte,model,i01,,8155.0,
 gecode,4,2024,accap,accap,accap_a10_f80_t50,,259.0,
 choco,1,2025,skill-allocation,skill_allocation_only,skill_allocation_mzn_5d_1,8665,2,Optimal
-gecode,1,2024,monitor-placement-1id,monitor_1id,igp_weight_based_defo_rf6461_real_hard,,,
+gecode,1,2024,monitor-placement-1id,monitor_1id,igp_weight_based_defo_rf6461_real_hard,,68.0,
 cp-sat,1,2024,word-equations,word_equations_01_track_140-int,,1140,3.0,Optimal
 choco,1,2024,concert-hall-cap,concert-hall-cap,concert_60_50,,3399897,
 CPLEX,2,2024,network_50_cstr,efm_cstr,MODEL2204190004,25265,3.0,Optimal
@@ -1493,7 +1493,7 @@ cp-sat,1,2024,graph-clear,graph_clear_cp,planar_n30_seed2022_4,,84.0,
 gecode,4,2024,portal,portal,random_10_0_100,,85.0,
 cp-sat,1,2024,cable-tree-wiring,ctw,A046,471280,13413296.0,Optimal
 chuffed,1,2025,atsp,atsp,instance20_0p35,,9341367.0,
-CPLEX,8,2024,monitor-placement-1id,monitor_1id,igp_weight_based_rocketfuel_rf1755_real_hard,233001,,Optimal
+CPLEX,8,2024,monitor-placement-1id,monitor_1id,igp_weight_based_rocketfuel_rf1755_real_hard,233001,36.0,Optimal
 Picat,1,2024,accap,accap,accap_a30_f300_t120,,338.0,
 chuffed,1,2025,tower,tower,tower_050_050_10_050-03,5250,45.0,Optimal
 CPLEX,2,2024,word-equations,word_equations_01_track_140-int,,2903,3.0,Optimal
@@ -1573,7 +1573,7 @@ gecode,8,2025,skill-allocation,skill_allocation_only,skill_allocation_mzn_3m_3,1
 CPLEX,1,2025,products-and-shelves,product-and-shelves,ps-25-01,1200343,,Unknown
 choco,4,2024,peacable_queens,peaceable_queens_mznc2021,pq_n9,,12,
 cp-sat,1,2025,EchoSched,JSP0,14-10-0-2_1,578774,11626.0,Optimal
-cp-sat,1,2024,monitor-placement-1id,monitor_1id,igp_weight_based_defo_rf6461_real_hard,821214,,Optimal
+cp-sat,1,2024,monitor-placement-1id,monitor_1id,igp_weight_based_defo_rf6461_real_hard,821214,68.0,Optimal
 CPLEX,1,2024,graph-clear,graph_clear_cp,planar_n20_seed2022_15,,75.0,
 gecode,1,2024,cable-tree-wiring,ctw,R193,,54282121.0,
 portfolio,8,2025,black-hole,black-hole,layout_3,,,
@@ -1691,7 +1691,7 @@ cp-sat,1,2025,black-hole,black-hole,layout_27,,,
 CPLEX,4,2024,community-detection,community-detection,mexican.s26.k4,18383,715070.0,Optimal
 portfolio,8,2024,cable-tree-wiring,ctw,A046,33894,13413296,Optimal
 gecode,2,2024,hoist-benchmark,hoist-benchmark,PU_2_4_3,1200604,,Unknown
-gecode,4,2024,monitor-placement-1id,monitor_1id,igp_weight_based_defo_rf6461_real_hard,,,
+gecode,4,2024,monitor-placement-1id,monitor_1id,igp_weight_based_defo_rf6461_real_hard,,68.0,
 Huub,1,2024,train-scheduling,trains,trains12,3681,291,Optimal
 Picat,1,2025,skill-allocation,skill_allocation_only,skill_allocation_mzn_2w_2,,6.0,
 Huub,1,2024,community-detection,community-detection,Polblogs.s2480.k2,20694,80137090,Optimal
@@ -1978,7 +1978,7 @@ CPLEX,8,2025,black-hole,black-hole,layout_25,1200140,,Unknown
 CPLEX,2,2024,community-detection,community-detection,Zakhary.s12.k4,39783,595004.0,Optimal
 choco,1,2025,atsp,atsp,instance14_0p25,,8259724,
 gecode,1,2025,ihtc-2024-kletzander,model4_opt,i09,,44710.0,
-CPLEX,1,2024,monitor-placement-1id,monitor_1id,hop_counting_based_zoo_Forthnet,35359,,Optimal
+CPLEX,1,2024,monitor-placement-1id,monitor_1id,hop_counting_based_zoo_Forthnet,35359,52.0,Optimal
 choco,1,2025,carpet-cutting,cc_base,cc_rnd_8_1,,990,
 gecode,4,2024,fox-geese-corn,foxgeesecorn,foxgeesecorn_19,,180.0,
 gecode,2,2025,proteindesign12,wcsp,2TRX.11p.8aa.usingEref_self_x,9479,5912.0,Optimal
@@ -2212,7 +2212,7 @@ gecode,1,2024,fox-geese-corn,foxgeesecorn,foxgeesecorn_17,,108.0,
 chuffed,1,2025,stripboard,stripboard,stripboard_w15_h10_l12_c6_n12,,120.0,
 gecode,1,2024,aircraft-disassembly,aircraft,B737NG-600-09-Anon.json,14299,,Unsatisfiable
 cp-sat,8,2025,gt-sort,gt-sort,n13_ub20_50.0_BEST,1200005,,Unknown
-Picat,1,2024,monitor-placement-1id,monitor_1id,hop_counting_based_caida_139203,1194225,,Optimal
+Picat,1,2024,monitor-placement-1id,monitor_1id,hop_counting_based_caida_139203,1194225,126.0,Optimal
 Huub,1,2024,portal,portal,random_20_1_100,1114261,25,Optimal
 choco,4,2025,ihtc-2024-kletzander,model4_opt,test05,,14140,
 CPLEX,8,2025,proteindesign12,wcsp,1HZ5.12p.19aa.usingEref_self,,3412.0,
@@ -2237,7 +2237,7 @@ cp-sat,8,2024,network_50_cstr,efm_cstr,MODEL1507180015,33950,3.0,Optimal
 choco,8,2024,word-equations,word_equations_03_track_133-int,,16761,23,Optimal
 chuffed,1,2025,cgt,cgt,cgt_5_h27_r0.05_s0.8_0,,-168684.0,
 portfolio,8,2025,is,model,1vERFuvviS,313,376832,Optimal
-CPLEX,2,2024,monitor-placement-1id,monitor_1id,igp_weight_based_defo_rf6461_real_hard,972899,,Optimal
+CPLEX,2,2024,monitor-placement-1id,monitor_1id,igp_weight_based_defo_rf6461_real_hard,972899,68.0,Optimal
 gecode,4,2024,aircraft-disassembly,aircraft,B737NG-600-09-Anon.json,10551,,Unsatisfiable
 portfolio,8,2024,monitor-placement-1id,monitor_1id,igp_weight_based_rocketfuel_rf6461_real_hard,770858,68,Optimal
 Huub,1,2024,compression,compression,bin_20,44350,38,Optimal
@@ -2283,7 +2283,7 @@ gecode,4,2025,gt-sort,gt-sort,n9_ub30_35.0_BEST,1200448,,Unknown
 choco,1,2025,carpet-cutting,cc_base,cc_rnd_16_1,,2020,
 Picat,1,2025,EchoSched,JSP0,14-10-0-2_3,889832,11786.0,Optimal
 choco,4,2024,harmony,harmony,minuet,,31,
-cp-sat,8,2024,monitor-placement-1id,monitor_1id,hop_counting_based_zoo_Forthnet,31326,,Optimal
+cp-sat,8,2024,monitor-placement-1id,monitor_1id,hop_counting_based_zoo_Forthnet,31326,52.0,Optimal
 CPLEX,2,2024,triangular,triangular,n11,100832,22.0,Optimal
 CPLEX,1,2024,hoist-benchmark,hoist-benchmark,PU_2_4_3,305659,295.0,Optimal
 CPLEX,2,2024,concert-hall-cap,concert-hall-cap,concert_60_50,15024,3423044.0,Optimal
@@ -2457,7 +2457,7 @@ cp-sat,1,2025,ihtc-2024-marte,model,i01,,4702.0,
 portfolio,8,2024,concert-hall-cap,concert-hall-cap,concert_200_20,9504,3170334,Optimal
 gecode,8,2024,triangular,triangular,n14,,30.0,
 portfolio,8,2024,hoist-benchmark,hoist-benchmark,PU_3_2_1,,720,Unknown
-CPLEX,4,2024,monitor-placement-1id,monitor_1id,igp_weight_based_rocketfuel_rf1755_real_hard,181680,,Optimal
+CPLEX,4,2024,monitor-placement-1id,monitor_1id,igp_weight_based_rocketfuel_rf1755_real_hard,181680,36.0,Optimal
 portfolio,8,2024,graph-clear,graph_clear_cp,planar_n30_seed2022_8,,70,Unknown
 gecode,2,2025,skill-allocation,skill_allocation_only,skill_allocation_mzn_2m_2,1202622,,Unknown
 gecode,8,2024,graph-clear,graph_clear_cp,planar_n20_seed2022_14,126288,54.0,Optimal
@@ -2600,7 +2600,7 @@ CPLEX,4,2025,ihtc-2024-marte,model,i01,,5131.0,
 gecode,2,2025,groupsplitter,group,u15g3pref0,,286.0,
 gecode,1,2025,ihtc-2024-kletzander,model4_opt,test05,1200231,,Unknown
 choco,1,2024,monitor-placement-1id,monitor_1id,igp_weight_based_defo_rf6461_real_hard,1015608,68,Optimal
-gecode,1,2024,monitor-placement-1id,monitor_1id,igp_weight_based_rocketfuel_rf1755_real_hard,274286,,Optimal
+gecode,1,2024,monitor-placement-1id,monitor_1id,igp_weight_based_rocketfuel_rf1755_real_hard,274286,36.0,Optimal
 portfolio,8,2024,aircraft-disassembly,aircraft,B737NG-600-01-Anon.json,9980,3297500,Optimal
 choco,4,2025,work-task-variation,work-task-variation,generated-seed-1-length-16-open-14-workers-12-block-15,257626,2139,Optimal
 gecode,4,2024,triangular,triangular,n20,,46.0,
@@ -2648,7 +2648,7 @@ gecode,2,2025,hitori,hitori,h11-1,1200067,,Unknown
 CPLEX,8,2024,compression,compression,bin_8,6004,26.0,Optimal
 choco,2,2025,is,model,avdoaYnfXq,833,73728,Optimal
 CPLEX,1,2025,proteindesign12,wcsp,1HZ5.12p.19aa.usingEref_self,,3412.0,
-Picat,1,2024,monitor-placement-1id,monitor_1id,hop_counting_based_zoo_Forthnet,32151,,Optimal
+Picat,1,2024,monitor-placement-1id,monitor_1id,hop_counting_based_zoo_Forthnet,32151,52.0,Optimal
 cp-sat,8,2024,fox-geese-corn,foxgeesecorn,foxgeesecorn_19,,693.0,
 Picat,1,2024,cable-tree-wiring,ctw,A033,,5161402.0,
 CPLEX,1,2024,neighbours,neighbours-rect,neightbours-new-2,195,17.0,Optimal
@@ -2713,7 +2713,7 @@ CPLEX,8,2025,EchoSched,JSP0,14-10-0-2_1,83427,11626.0,Optimal
 Picat,1,2025,groupsplitter,group,u15g5pref1,1200535,,Unknown
 choco,2,2025,products-and-shelves,product-and-shelves,ps-25-03,,4,
 choco,2,2025,products-and-shelves,product-and-shelves,ps-50-06,1202556,,Unknown
-gecode,1,2024,monitor-placement-1id,monitor_1id,hop_counting_based_zoo_Forthnet,39258,,Optimal
+gecode,1,2024,monitor-placement-1id,monitor_1id,hop_counting_based_zoo_Forthnet,39258,52.0,Optimal
 Picat,1,2025,gt-sort,gt-sort,n9_ub10_50.0_BEST,649594,110.0,Optimal
 cp-sat,8,2025,products-and-shelves,product-and-shelves,ps-50-06,35183,15.0,Optimal
 choco,2,2025,tsptw,tsptw,n20w180.004,,289,
@@ -2806,7 +2806,7 @@ choco,2,2024,train-scheduling,trains,trains09,,991,
 portfolio,8,2024,train-scheduling,trains,trains12,2628,291,Optimal
 Huub,1,2024,peacable_queens,peaceable_queens_mznc2021,pq_n19,,35,
 gecode,8,2025,EchoSched,JSP0,12-12-0-1_7,,12255.0,
-CPLEX,2,2024,monitor-placement-1id,monitor_1id,hop_counting_based_zoo_Forthnet,39637,,Optimal
+CPLEX,2,2024,monitor-placement-1id,monitor_1id,hop_counting_based_zoo_Forthnet,39637,52.0,Optimal
 CPLEX,1,2025,ihtc-2024-marte,model,i06,1223799,,Unknown
 choco,1,2024,compression,compression,lipsum_10,1200805,,Unknown
 choco,4,2025,ihtc-2024-marte,model,i11,,34655,
@@ -2831,7 +2831,7 @@ CPLEX,4,2025,fbd1,FBD1,FBDk09,,965.0,
 choco,8,2025,gt-sort,gt-sort,n9_ub10_75.0_BEST,1273,,Unknown
 choco,4,2024,community-detection,community-detection,Zakhary.s12.k3,50576,595004,Optimal
 choco,4,2024,portal,portal,random_20_9_100,49328,2,Optimal
-CPLEX,1,2024,monitor-placement-1id,monitor_1id,igp_weight_based_rocketfuel_rf6461_real_hard,1059891,,Optimal
+CPLEX,1,2024,monitor-placement-1id,monitor_1id,igp_weight_based_rocketfuel_rf6461_real_hard,1059891,68.0,Optimal
 Huub,1,2025,carpet-cutting,cc_base,cc_rnd_12_3,487,1550,Error
 choco,8,2025,atsp,atsp,instance1_0p05,815,657504,Optimal
 gecode,4,2025,products-and-shelves,product-and-shelves,toy,,10.0,
@@ -2851,7 +2851,7 @@ cp-sat,1,2025,carpet-cutting,cc_base,cc_rnd_8_2,77460,880.0,Optimal
 CPLEX,4,2024,graph-clear,graph_clear_cp,planar_n30_seed2022_8,,126.0,
 gecode,1,2024,neighbours,neighbours-rect,neightbours-new-2,170,17.0,Optimal
 CPLEX,4,2025,proteindesign12,wcsp,1UBI.13p.19aa.usingEref_self,,3818.0,
-CPLEX,1,2024,monitor-placement-1id,monitor_1id,igp_weight_based_rocketfuel_rf1755_real_hard,157257,,Optimal
+CPLEX,1,2024,monitor-placement-1id,monitor_1id,igp_weight_based_rocketfuel_rf1755_real_hard,157257,36.0,Optimal
 CPLEX,4,2025,groupsplitter,group,u15g5pref1,1239493,,Unknown
 gecode,4,2025,black-hole,black-hole,layout_25,,,
 cp-sat,1,2024,network_50_cstr,efm_cstr,toy_network_1000_m,54994,2.0,Optimal
@@ -2943,7 +2943,7 @@ cp-sat,8,2024,harmony,harmony,minuet,2446,31.0,Optimal
 gecode,4,2025,tower,tower,tower_500_500_50_300-05,,59.0,
 cp-sat,8,2024,peacable_queens,peaceable_queens_mznc2021,pq_n19,,47.0,
 choco,1,2025,fbd1,FBD1,FBDk09,,209,
-CPLEX,4,2024,monitor-placement-1id,monitor_1id,igp_weight_based_rocketfuel_rf6461_real_hard,949578,,Optimal
+CPLEX,4,2024,monitor-placement-1id,monitor_1id,igp_weight_based_rocketfuel_rf6461_real_hard,949578,68.0,Optimal
 choco,1,2025,proteindesign12,wcsp,1UBI.13p.19aa.usingEref_self,,3799,
 CPLEX,2,2024,community-detection,community-detection,Polblogs.s2480.k2,38056,80137090.0,Optimal
 portfolio,8,2024,harmony,harmony,ode,,64,
@@ -2970,7 +2970,7 @@ cp-sat,8,2025,skill-allocation,skill_allocation_only,skill_allocation_mzn_2m_2,,
 cp-sat,8,2025,products-and-shelves,product-and-shelves,toy,1235,6.0,Optimal
 choco,4,2025,ihtc-2024-marte,model,i14,,29681,
 gecode,8,2024,community-detection,community-detection,mexican.s26.k4,5017,715070.0,Optimal
-CPLEX,8,2024,monitor-placement-1id,monitor_1id,igp_weight_based_rocketfuel_rf6461_real_hard,1197682,,Optimal
+CPLEX,8,2024,monitor-placement-1id,monitor_1id,igp_weight_based_rocketfuel_rf6461_real_hard,1197682,68.0,Optimal
 Huub,1,2025,ihtc-2024-marte,model,i14,1218576,,Unknown
 Picat,1,2025,work-task-variation,work-task-variation,generated-seed-3-length-10-open-8-workers-12-block-15,1015327,193.0,Optimal
 cp-sat,1,2024,concert-hall-cap,concert-hall-cap,concert_150_20,5895,2703151.0,Optimal
@@ -3095,7 +3095,7 @@ cp-sat,1,2024,compression,compression,bin_20,,38.0,
 choco,2,2025,atsp,atsp,instance20_0p35,,7191966,
 choco,2,2025,hitori,hitori,h5-1,2563,17,Optimal
 cp-sat,1,2024,neighbours,neighbours-rect,neightbours-new-2,196,17.0,Optimal
-gecode,4,2024,monitor-placement-1id,monitor_1id,igp_weight_based_rocketfuel_rf1755_real_hard,161768,,Optimal
+gecode,4,2024,monitor-placement-1id,monitor_1id,igp_weight_based_rocketfuel_rf1755_real_hard,161768,36.0,Optimal
 CPLEX,1,2024,cable-tree-wiring,ctw,R193,1200576,,Unknown
 choco,4,2025,ihtc-2024-marte,model,i01,1097,,Unknown
 choco,2,2025,mondoku,mondoku-gcc-model-balance,10-10-6,1058772,1,Optimal
@@ -3136,7 +3136,7 @@ choco,1,2024,fox-geese-corn,foxgeesecorn,fgc_06_26_08_00,,48,
 CPLEX,4,2024,network_50_cstr,efm_cstr,toy_network_1000_m,37797,2.0,Optimal
 CPLEX,8,2025,tower,tower,tower_050_050_10_050-03,27627,45.0,Optimal
 chuffed,1,2025,stripboard,stripboard,stripboard_w20_h15_l7_c6_n24,3968,63.0,Optimal
-Picat,1,2024,monitor-placement-1id,monitor_1id,igp_weight_based_rocketfuel_rf6461_real_hard,834936,,Optimal
+Picat,1,2024,monitor-placement-1id,monitor_1id,igp_weight_based_rocketfuel_rf6461_real_hard,834936,68.0,Optimal
 CPLEX,1,2024,fox-geese-corn,foxgeesecorn,fgc_20_20_22_00,20435,206.0,Optimal
 choco,1,2024,fox-geese-corn,foxgeesecorn,foxgeesecorn_17,,360,
 gecode,8,2025,stripboard,stripboard,stripboard_w15_h10_l12_c6_n12,1200085,,Unknown
@@ -3167,7 +3167,7 @@ portfolio,8,2025,ihtc-2024-marte,model,i01,,4592,Unknown
 CPLEX,4,2024,triangular,triangular,n31,,74.0,
 choco,4,2024,fox-geese-corn,foxgeesecorn,foxgeesecorn_19,,557,
 choco,2,2024,train-scheduling,trains,trains05,,304,
-CPLEX,1,2024,monitor-placement-1id,monitor_1id,igp_weight_based_defo_rf6461_real_hard,848431,,Optimal
+CPLEX,1,2024,monitor-placement-1id,monitor_1id,igp_weight_based_defo_rf6461_real_hard,848431,68.0,Optimal
 cp-sat,1,2024,graph-clear,graph_clear_cp,planar_n20_seed2022_15,66137,54.0,Optimal
 chuffed,1,2025,atsp,atsp,instance1_0p05,420,657504.0,Optimal
 choco,2,2024,fox-geese-corn,foxgeesecorn,foxgeesecorn_19,,561,
@@ -3301,7 +3301,7 @@ choco,8,2025,fbd1,FBD1,FBDk09,,209,
 CPLEX,1,2025,tsptw,tsptw,n80w180.003,1200282,,Unknown
 gecode,1,2024,yumi-dynamic,yumi-dynamic,p_5_GSS_SG_yumi_grid_setup_3_4_zones,1200264,,Unknown
 gecode,8,2025,groupsplitter,group,u12g2pref0,,207.0,
-cp-sat,1,2024,monitor-placement-1id,monitor_1id,igp_weight_based_rocketfuel_rf1755_real_hard,139633,,Optimal
+cp-sat,1,2024,monitor-placement-1id,monitor_1id,igp_weight_based_rocketfuel_rf1755_real_hard,139633,36.0,Optimal
 CPLEX,1,2024,harmony,harmony,twinkle,,30.0,
 choco,1,2024,monitor-placement-1id,monitor_1id,hop_counting_based_zoo_Forthnet,35017,52,Optimal
 choco,8,2024,community-detection,community-detection,Zakhary.s12.k4,479827,595004,Optimal
@@ -3366,7 +3366,7 @@ gecode,1,2024,fox-geese-corn,foxgeesecorn,fgc_20_20_22_00,,139.0,
 choco,4,2024,tiny-cvrp,TinyCVRP_ExactlyOneSolution,easy_instance_04,11115,454,Optimal
 gecode,2,2024,triangular,triangular,n11,,22.0,
 gecode,1,2025,is,model,9aGFgDaHX7,178,688128.0,Optimal
-Picat,1,2024,monitor-placement-1id,monitor_1id,igp_weight_based_rocketfuel_rf1755_real_hard,135466,,Optimal
+Picat,1,2024,monitor-placement-1id,monitor_1id,igp_weight_based_rocketfuel_rf1755_real_hard,135466,36.0,Optimal
 choco,8,2025,is,model,avdoaYnfXq,1922,73728,Optimal
 CPLEX,2,2025,stripboard,stripboard,stripboard_w20_h15_l7_c6_n24,,63.0,
 choco,8,2025,atsp,atsp,instance4_0p15,398267,562581,Optimal
@@ -3395,7 +3395,7 @@ CPLEX,4,2024,train-scheduling,trains,trains09,23475,990.0,Optimal
 CPLEX,4,2024,tiny-cvrp,TinyCVRP_ExactlyOneSolution,easy_instance_04,1019,454.0,Optimal
 cp-sat,8,2024,triangular,triangular,n20,,48.0,
 cp-sat,8,2024,portal,portal,small_3,62051,20.0,Optimal
-gecode,2,2024,monitor-placement-1id,monitor_1id,hop_counting_based_zoo_Forthnet,32482,,Optimal
+gecode,2,2024,monitor-placement-1id,monitor_1id,hop_counting_based_zoo_Forthnet,32482,52.0,Optimal
 gecode,4,2024,fox-geese-corn,foxgeesecorn,fgc_06_26_08_00,,48.0,
 gecode,2,2024,accap,accap,accap_a3_f20_t10,,144.0,
 choco,2,2024,concert-hall-cap,concert-hall-cap,concert_200_20,,3088782,
@@ -3424,7 +3424,7 @@ portfolio,8,2024,harmony,harmony,minuet,,80,
 Huub,1,2024,hoist-benchmark,hoist-benchmark,PU_2_4_3,7473,295,Optimal
 choco,8,2025,groupsplitter,group,u15g3pref0,,342,
 CPLEX,1,2025,skill-allocation,skill_allocation_only,skill_allocation_mzn_3m_3,1202199,,Unknown
-cp-sat,8,2024,monitor-placement-1id,monitor_1id,hop_counting_based_caida_139203,1149875,,Optimal
+cp-sat,8,2024,monitor-placement-1id,monitor_1id,hop_counting_based_caida_139203,1149875,126.0,Optimal
 gecode,1,2024,concert-hall-cap,concert-hall-cap,concert_100_20,1200098,,Unknown
 gecode,2,2025,gt-sort,gt-sort,n9_ub10_75.0_BEST,,123.0,
 Picat,1,2024,aircraft-disassembly,aircraft,B737NG-600-01-Anon.json,,3486750.0,
@@ -3539,7 +3539,7 @@ choco,2,2024,graph-clear,graph_clear_cp,planar_n30_seed2022_8,,124,
 CPLEX,8,2024,yumi-dynamic,yumi-dynamic,p_4_GG_GG_yumi_grid_setup_5_5_zones,1211778,,Unknown
 cp-sat,1,2024,neighbours,neighbours-rect,neightbours-new-15,,224.0,
 portfolio,8,2024,monitor-placement-1id,monitor_1id,igp_weight_based_defo_rf6461_real_hard,779334,68,Optimal
-chuffed,1,2024,monitor-placement-1id,monitor_1id,igp_weight_based_rocketfuel_rf6461_real_hard,873637,,Optimal
+chuffed,1,2024,monitor-placement-1id,monitor_1id,igp_weight_based_rocketfuel_rf6461_real_hard,873637,68.0,Optimal
 choco,4,2025,is,model,1vERFuvviS,1922,376832,Optimal
 gecode,1,2024,graph-clear,graph_clear_cp,planar_n30_seed2022_4,,84.0,
 CPLEX,4,2025,ihtc-2024-kletzander,model4_opt,test03,1201112,,Unknown
@@ -3565,7 +3565,7 @@ cp-sat,8,2025,mondoku,mondoku-gcc-model-balance,8-8-4,642,0.0,Optimal
 Picat,1,2024,fox-geese-corn,foxgeesecorn,foxgeesecorn_61,8877,32.0,Optimal
 gecode,4,2025,ihtc-2024-kletzander,model4_opt,test05,1200248,,Unknown
 choco,1,2024,graph-clear,graph_clear_cp,planar_n20_seed2022_14,,86,
-gecode,8,2024,monitor-placement-1id,monitor_1id,igp_weight_based_rocketfuel_rf1755_real_hard,141796,,Optimal
+gecode,8,2024,monitor-placement-1id,monitor_1id,igp_weight_based_rocketfuel_rf1755_real_hard,141796,36.0,Optimal
 choco,4,2025,fbd1,FBD1,FBDk08,,168,
 cp-sat,1,2024,aircraft-disassembly,aircraft,B737NG-600-02-Anon.json,,6417000.0,
 cp-sat,8,2025,ihtc-2024-marte,model,i03,,11795.0,

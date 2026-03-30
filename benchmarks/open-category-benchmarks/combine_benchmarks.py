@@ -78,18 +78,32 @@ def read_mzn_challenge(path: Path) -> list[dict]:
     return rows
 
 
+SOURCES = [
+    # (glob_pattern, reader_function_name)
+    # 'dexter' reader: has solver, cores, problem, name, model, time_ms, objective, status columns
+    # 'parasol' reader: has schedule, problem, name, model, time_ms, objective, optimal columns
+    #                    cores inferred from folder name suffix, year from filename
+    ('dexter8/*.csv',                'dexter'),
+    ('maybe-better-schedule8/*.csv', 'parasol'),
+    ('svm8/*.csv',                   'parasol'),
+    # Add new sources here...
+]
+
+READERS = {
+    'dexter': read_dexter,
+    'parasol': read_maybe_better_schedule,
+}
+
+
 def main():
     all_rows = []
 
-    for path in sorted(BASE.glob('dexter8/*.csv')):
-        rows = read_dexter(path)
-        print(f'dexter8/{path.name}: {len(rows)} rows')
-        all_rows.extend(rows)
-
-    for path in sorted(BASE.glob('maybe-better-schedule8/*.csv')):
-        rows = read_maybe_better_schedule(path)
-        print(f'maybe-better-schedule8/{path.name}: {len(rows)} rows')
-        all_rows.extend(rows)
+    for glob_pattern, reader_name in SOURCES:
+        reader = READERS[reader_name]
+        for path in sorted(BASE.glob(glob_pattern)):
+            rows = reader(path)
+            print(f'{path.relative_to(BASE)}: {len(rows)} rows')
+            all_rows.extend(rows)
 
     mzn_csv = BASE / 'allesio' / 'mzn-challenge.csv'
     rows = read_mzn_challenge(mzn_csv)

@@ -27,7 +27,7 @@ from pathlib import Path
 # ── Configuration ──────────────────────────────────────────────────────────────
 CSV_PATH       = Path(__file__).parent.parent / 'open-category-benchmarks' / 'combined.csv'
 TYPES_CSV_PATH = Path(__file__).parent / 'problem_types.csv'
-YEARS          = ['2024', '2025']   # which years to include
+YEARS          = ['2023', '2024', '2025']   # which years to include
 MAX_TIME_MS    = 1_200_000          # fallback when time_ms is missing
 # ───────────────────────────────────────────────────────────────────────────────
 
