@@ -85,8 +85,8 @@ SOURCES = [
     #                    cores inferred from folder name suffix, year from filename
     ('dexter8/*.csv',                'dexter'),
     ('maybe-better-schedule8/*.csv', 'parasol'),
-    ('svm8/*.csv',                   'parasol'),
-    # Add new sources here...
+    ('svm-no-static8/*.csv',          'parasol'),
+    ('svm8/*.csv',          'parasol'),
 ]
 
 READERS = {
@@ -105,10 +105,12 @@ def main():
             print(f'{path.relative_to(BASE)}: {len(rows)} rows')
             all_rows.extend(rows)
 
-    mzn_csv = BASE / 'allesio' / 'mzn-challenge.csv'
-    rows = read_mzn_challenge(mzn_csv)
-    print(f'allesio/mzn-challenge.csv: {len(rows)} rows')
-    all_rows.extend(rows)
+    for name in ('mzn-challenge.csv', 'mzn-challenge-2023.csv'):
+        mzn_csv = BASE / 'allesio' / name
+        if mzn_csv.exists():
+            rows = read_mzn_challenge(mzn_csv)
+            print(f'allesio/{name}: {len(rows)} rows')
+            all_rows.extend(rows)
 
     print(f'\nTotal: {len(all_rows)} rows')
 

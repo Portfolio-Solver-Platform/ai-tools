@@ -210,3 +210,6 @@ __marimo__/
 .claude 
 
 dumb_experiments/
+
+
+*.out

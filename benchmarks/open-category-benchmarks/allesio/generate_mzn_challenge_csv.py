@@ -10,6 +10,7 @@ import csv
 
 RESULTS_PATH = Path('/Users/sofus/speciale/ai/mzn_challenge_results')
 DATA_PATH = Path('/Users/sofus/speciale/ai/data')
+JSON_2023_PATH = Path(__file__).parent / '2023_results.json'
 OUT_PATH = Path(__file__).parent / 'mzn-challenge.csv'
 
 YEAR_FOLDERS = ['mznc2022_probs', 'mznc2023_probs', 'mznc2024_probs', 'mznc2025_probs']
@@ -132,6 +133,10 @@ def parse_out_file(path: Path, problem: str = ''):
             time_ms = d.get('time')
 
     objective = last_solution_objective
+    if time_ms is None:
+        time_ms = 1200000
+    if status is None:
+        status = 'Unknown'
     return time_ms, objective, status
 
 
