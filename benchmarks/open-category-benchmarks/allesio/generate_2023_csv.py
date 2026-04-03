@@ -43,6 +43,14 @@ def main():
                 else:
                     status = 'Unknown'
 
+                # For non-optimal results the JSON 'time' is when the last
+                # solution was found, not wall-clock runtime.  The solver
+                # would have kept running until the 1200s timeout.
+                if status in ('Optimal', 'Unsatisfiable'):
+                    time_ms = entry['time']
+                else:
+                    time_ms = 1200000
+
                 rows.append({
                     'solver': solver,
                     'cores': cores,
@@ -50,7 +58,7 @@ def main():
                     'problem': problem,
                     'model': model,
                     'name': entry['name'],
-                    'time_ms': entry['time'],
+                    'time_ms': time_ms,
                     'objective': entry['objective'],
                     'status': status,
                 })
