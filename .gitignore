@@ -213,3 +213,7 @@ dumb_experiments/
 
 
 *.out
+
+
+benchmarks/open-category-benchmarks/tmp-solvers/*
+benchmarks/open-category-benchmarks/solvers/*

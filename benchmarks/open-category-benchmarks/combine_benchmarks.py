@@ -9,7 +9,10 @@ from pathlib import Path
 
 BASE = Path(__file__).parent
 OUT_PATH = BASE / "combined.csv"
-FIELDNAMES = ["solver", "cores", "year", "problem", "name", "model", "time_ms", "objective", "status"]
+INPUT_FIELDS = ["solver", "cores", "year", "problem", "name", "model", "time_ms", "objective", "status"]
+# open_category: True for the row that represents each solver's best variant per year
+# (the one with the most cores). These are the rows that compete in the "open" category.
+OUTPUT_FIELDS = INPUT_FIELDS + ["open_category"]
 
 ALLESIO_SOLVERS = {"Picat", "CPLEX", "gecode", "cp-sat"}
 
@@ -22,18 +25,21 @@ def read_csv(path: Path) -> list[dict]:
     rows = []
     with open(path, newline="") as f:
         for row in csv.DictReader(f):
-            rows.append({field: row[field] for field in FIELDNAMES})
+            rows.append({field: row[field] for field in INPUT_FIELDS})
     return rows
 
 
-def read_mzn_challenge(path: Path) -> list[dict]:
-    rows = []
-    with open(path, newline="") as f:
-        for row in csv.DictReader(f):
-            if row["solver"] not in ALLESIO_SOLVERS:
-                continue
-            rows.append({field: row[field] for field in FIELDNAMES})
-    return rows
+def annotate_open_category(rows: list[dict]) -> None:
+    """Mark each solver's highest-core variant (per year) as the open-category rep."""
+    max_cores: dict[tuple, int] = {}
+    for r in rows:
+        key = (r["solver"], r["year"])
+        c = int(r["cores"])
+        if c > max_cores.get(key, -1):
+            max_cores[key] = c
+    for r in rows:
+        key = (r["solver"], r["year"])
+        r["open_category"] = "True" if int(r["cores"]) == max_cores[key] else "False"
 
 
 def main():
@@ -46,19 +52,15 @@ def main():
     print(f"tmp-solvers/combined.csv: {len(rows)} rows")
     all_rows.extend(rows)
 
-    mzn_csv = BASE / "allesio" / "mzn-challenge.csv"
-    if mzn_csv.exists():
-        rows = read_mzn_challenge(mzn_csv)
-        print(f"allesio/mzn-challenge.csv: {len(rows)} rows (solvers: {', '.join(sorted(ALLESIO_SOLVERS))})")
-        all_rows.extend(rows)
-
     for r in all_rows:
         r["status"] = STATUS_NORMALIZE.get(r["status"], r["status"])
+
+    annotate_open_category(all_rows)
 
     print(f"\nTotal: {len(all_rows)} rows")
 
     with open(OUT_PATH, "w", newline="") as f:
-        writer = csv.DictWriter(f, fieldnames=FIELDNAMES)
+        writer = csv.DictWriter(f, fieldnames=OUTPUT_FIELDS)
         writer.writeheader()
         writer.writerows(all_rows)
 

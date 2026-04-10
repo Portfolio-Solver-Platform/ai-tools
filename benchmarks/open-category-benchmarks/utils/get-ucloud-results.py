@@ -13,8 +13,8 @@ import shutil
 from pathlib import Path
 
 SOLVERS_OF_INTEREST = {
-    "choco", "coin-bc", "dexter", "highs", "izplus",
-    "gurobi", "huub", "pumpkin", "scip", "yuck",
+    "choco", "chuffed", "coin-bc", "cplex", "cpsat", "dexter", "gecode", "highs", "izplus",
+    "gurobi", "huub", "pumpkin", "picat", "scip", "yuck",
 }
 
 

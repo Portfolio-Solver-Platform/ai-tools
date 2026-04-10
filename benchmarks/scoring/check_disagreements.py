@@ -8,16 +8,16 @@ from collections import defaultdict
 from pathlib import Path
 
 CSV_PATH = Path(__file__).parent.parent / 'open-category-benchmarks' / 'combined.csv'
-TYPES_CSV_PATH = Path(__file__).parent / 'problem_types.csv'
+TYPES_CSV_PATH = Path(__file__).parent.parent / 'open-category-benchmarks' / 'problem_types.csv'
 
 SOLVED_STATUSES = {'Satisfied', 'Optimal', 'AllSolutions'}
 
 
-def load_problem_types(path: Path) -> dict[str, str]:
+def load_problem_types(path: Path) -> dict[tuple[str, str], str]:
     types = {}
     with open(path) as f:
         for row in csv.DictReader(f):
-            types[row['model']] = row['type']
+            types[(row['problem'], row['model'])] = row['type']
     return types
 
 
@@ -34,7 +34,7 @@ def main():
     optimal_disagree = []
 
     for (year, problem, model, name), group in instances.items():
-        kind = problem_types.get(model)
+        kind = problem_types.get((problem, model))
 
         has_unsat = [r for r in group if r['status'] in ('Unsatisfiable', 'Unsat')]
         has_solved = [r for r in group if r['status'] in SOLVED_STATUSES]
@@ -61,7 +61,7 @@ def main():
 
     print(f'=== OPTIMAL objective disagreements ({len(optimal_disagree)}) ===\n')
     for year, problem, name, model, optimals in sorted(optimal_disagree):
-        print(f'{year} {problem}/{name} (model={model}, type={problem_types.get(model)})')
+        print(f'{year} {problem}/{name} (model={model}, type={problem_types.get((problem, model))})')
         for r in sorted(optimals, key=lambda r: float(r['objective'])):
             print(f'  {r["solver"]:>30} cores={r["cores"]}  obj={r["objective"]}  time={r["time_ms"]}')
         print()

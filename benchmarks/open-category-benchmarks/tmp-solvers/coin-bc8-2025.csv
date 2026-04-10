@@ -1,2 +1,0 @@
-solver,cores,problem,name,model,time_ms,objective,status
-org.minizinc.mip.coin-bc,8,EchoSched,12-12-0-1_7,JSP0,692976,12135,Optimal

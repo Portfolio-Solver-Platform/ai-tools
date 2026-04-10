@@ -3,7 +3,7 @@
 #set page(width: auto, height: auto, margin: 1em)
 
 #let labels = ("pin", "no-pin")
-#let times = (59400.7, 59433.6)
+#let times = (54638.0, 52851.9)
 
 #lq.diagram(
   width: 8cm,

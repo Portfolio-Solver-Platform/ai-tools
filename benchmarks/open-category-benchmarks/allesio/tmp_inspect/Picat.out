@@ -1,8 +1,0 @@
-{"type": "comment", "comment": "% solving(/tmp/mznfile3VuBwN.fzn)\n"}
-{"type": "comment", "comment": "% loading /tmp/mznfile3VuBwN.fzn\n"}
-{"type": "comment", "comment": "% obj = 51\n"}
-{"type": "solution", "output": {"dzn": "n = [6, 11, 14, 21];\nn_star = 9;\nQ = [12, 22, 28, 42];\nT_plus = [17, 20, 27, 25, 32, 35];\nT_minus = [5, 8, 15, 3, 10, 7];\nQ_folded = [39, 29, 23, 9];\nT_plus_folded = [34, 31, 24, 26, 19, 16];\nN = 51;\n_objective = 51;\n"}, "sections": ["dzn"], "time": 356}
-{"type": "comment", "comment": "% obj = 46\n"}
-{"type": "solution", "output": {"dzn": "n = [12, 14, 15, 21];\nn_star = 4;\nQ = [24, 28, 30, 42];\nT_plus = [26, 27, 33, 29, 35, 36];\nT_minus = [2, 3, 9, 1, 7, 6];\nQ_folded = [22, 18, 16, 4];\nT_plus_folded = [20, 19, 13, 17, 11, 10];\nN = 46;\n_objective = 46;\n"}, "sections": ["dzn"], "time": 1096}
-{"type": "comment", "comment": "% obj = 46\n"}
-{"type": "status", "status": "OPTIMAL_SOLUTION", "time": 1096}

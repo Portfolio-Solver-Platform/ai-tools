@@ -6,22 +6,35 @@ import numpy as np
 from systems import solver_systems
 
 
-def open_solver_configs(data):
-    r = data["results"]
-    systems = solver_systems(data)
-    open_names = {s for s, o in zip(r["solvers"], r["open_solvers"]) if o}
-    open_systems = {base for base, info in systems.items() if any(n in open_names for n in info["benchmarks"].values())}
-    configs = []
-    for base in open_systems:
-        for cores, name in systems[base]["benchmarks"].items():
-            configs.append((name, cores))
-    return configs
+def combinations_summing_to(items, target, key=lambda x: x):
+    def backtrack(start, remaining, current):
+        if remaining == 0:
+            yield tuple(current)
+            return
+        for i in range(start, len(items)):
+            val = key(items[i])
+            if val > remaining:
+                continue
+            current.append(items[i])
+            yield from backtrack(i + 1, remaining - val, current)
+            current.pop()
+    
+    yield from backtrack(0, target, [])
 
 
-def open_competitors(data):
-    r = data["results"]
-    return [s for s, o in zip(r["solvers"], r["open_solvers"]) if o]
+# def open_competitors(data):
+#     r = data["results"]
+#     return [s for s, o in zip(r["solvers"], r["open_solvers"]) if o]
 
+
+def all_competitors_with_cores(data):
+      r = data["results"]
+      systems = solver_systems(data)
+      configs = []
+      for base in systems:
+          for cores, name in systems[base]["benchmarks"].items():
+              configs.append((name, cores))
+      return configs
 
 def build_score_matrix(data, competitor_names):
     r = data["results"]
@@ -29,26 +42,17 @@ def build_score_matrix(data, competitor_names):
     return np.array(r["scores"])[:, comp_idxs, :]
 
 
-def best_portfolios(data, top_n=5):
-    configs = open_solver_configs(data)
-    competitors = open_competitors(data)
+def best_portfolios(data, top_n=100000):
+    competitors = all_competitors_with_cores(data)
     solvers = data["results"]["solvers"]
-    M = build_score_matrix(data, competitors)
-
-    single_core = [name for name, c in configs if c == 1]
-    eight_core = [name for name, c in configs if c == 8]
+    # (solvers, opponents, instances) → (solvers, instances)
+    per_instance = build_score_matrix(data, solvers).sum(axis=1)
 
     candidates = []
-
-    eight_idxs = [solvers.index(name) for name in eight_core]
-    eight_scores = M[eight_idxs].sum(axis=(1, 2))
-    for score, name in zip(eight_scores, eight_core):
-        candidates.append((score, [(name, 8)]))
-
-    # for combo in combinations(single_core, 8):
-    #     idxs = [solvers.index(n) for n in combo]
-    #     s = M[idxs].max(axis=0).sum()
-    #     candidates.append((s, [(n, 1) for n in combo]))
+    for combo in combinations_summing_to(competitors, 8, lambda k: k[1]):
+        idxs = [solvers.index(name) for name, _ in combo]
+        score = per_instance[idxs].max(axis=0).sum()
+        candidates.append((score, list(combo)))
 
     candidates.sort(reverse=True)
     return candidates[:top_n]

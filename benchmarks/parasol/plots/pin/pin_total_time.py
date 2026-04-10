@@ -4,7 +4,7 @@
 import csv
 from pathlib import Path
 
-DATA_DIR = Path(__file__).resolve().parent.parent.parent / "pin-degrades-performance"
+DATA_DIR = Path(__file__).resolve().parent / "pin-degrades-performance"
 OUTPUT_FILE = Path(__file__).resolve().parent / "pin_total_time.typ"
 
 CONFIGS = [
