@@ -37,6 +37,10 @@ def generate_features_for_everything(problems_path, save_dict, n_workers=None):
                     key = ".".join(model.split(".")[:-1]) + "_" + ".".join(instance_name.split(".")[:-1])
                     jobs.append((model_path, instance_path, key))
 
+    if not jobs:
+        print("No instances found")
+        return
+
     if n_workers is None:
         n_workers = min(cpu_count(), len(jobs))
 

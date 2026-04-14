@@ -19,7 +19,7 @@ def main():
     base = Path(sys.argv[1]) if len(sys.argv) > 1 else DEFAULT_BASE
 
     for year_dir in sorted(base.iterdir()):
-        if not year_dir.is_dir():
+        if not year_dir.is_dir() or year_dir.name.startswith('.'):
             continue
 
         out = DATA_DIR / f"mznc{year_dir.name}_features.pkl"
