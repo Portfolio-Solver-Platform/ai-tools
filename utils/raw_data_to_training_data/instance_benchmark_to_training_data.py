@@ -34,43 +34,56 @@ def insert_or_update(my_dict, key, target_idx, number, n_solvers):
         my_dict[key] = new_list_structure
     my_dict[key][target_idx].append(number)
 
-def to_numpy(benchmarks, instances_path):
+def load_features(instances_paths: list[Path]) -> dict:
+    """Load or generate features from one or more instance directories."""
+    all_features = {}
+    for instances_path in instances_paths:
+        saved_features_path = SAVE_DATA_PATH / f"{instances_path.name}_features.pkl"
+        if saved_features_path.is_file():
+            with open(saved_features_path, 'rb') as f:
+                features = pickle.load(f)
+        else:
+            features = {}
+            generate_features_for_everything(instances_path, features)
+            with open(saved_features_path, 'wb') as f:
+                pickle.dump(features, f)
+        all_features.update(features)
+    return all_features
+
+
+def to_numpy(benchmarks, instances_paths):
     average_times = get_times(benchmarks)
-    features = dict()
-    saved_features_path = SAVE_DATA_PATH / f"{instances_path.name}_features.pkl"
-    if saved_features_path.is_file():
-        with open(saved_features_path, 'rb') as f:  
-            features = pickle.load(f)
-    else:
-        generate_features_for_everything(instances_path, features)
-        with open(saved_features_path, 'wb') as f: 
-            pickle.dump(features, f)
-        
+    features = load_features(instances_paths)
+
     common_keys = average_times.keys() & features.keys()
     print(f"Only in average_times: {average_times.keys() - features.keys()}")
     print(f"Only in features: {features.keys() - average_times.keys()}")
 
     sorted_keys = sorted(common_keys)
+    valid_keys = [k for k in sorted_keys if features[k] is not None]
 
-    valid_keys = [k for k in sorted_keys if features[k] is not None]                                                  
-                                                                                                                      
     Y = [[np.nanmean(solver_times) for solver_times in average_times[k]] for k in valid_keys]
     X = [features[k] for k in valid_keys]
     Y = np.array(Y)
     X = np.vstack(X)
-    
 
     return X, Y
 
 
-def convert(benchmarks: list[Path], instances: Path):
-    saved_data_path = SAVE_DATA_PATH / f"{instances.name}_training_data.npz"
+def convert(benchmarks: list[Path], instances: Path | list[Path]):
+    if isinstance(instances, list):
+        cache_name = "_".join(sorted(p.name for p in instances))
+        instances_paths = instances
+    else:
+        cache_name = instances.name
+        instances_paths = [instances]
+    saved_data_path = SAVE_DATA_PATH / f"{cache_name}_training_data.npz"
     if saved_data_path.is_file():
         data = np.load(saved_data_path)
         X = data["X"]
         Y = data["Y"]
         return X, Y
-    else: 
-        X, Y = to_numpy(benchmarks, instances)
-        np.savez(saved_data_path,X=X, Y=Y)
+    else:
+        X, Y = to_numpy(benchmarks, instances_paths)
+        np.savez(saved_data_path, X=X, Y=Y)
         return X, Y

@@ -1,0 +1,4 @@
+schedule,problem,name,model,time_ms,objective,optimal,last_result_from
+k3-8c-4s-v1-p2,chessboard,chessboard3,chessboard,22458,48,Optimal,org.minizinc.mip.gurobi
+k3-8c-4s-v1-p2,chessboard,chessboard4,chessboard,2154,25,Optimal,org.minizinc.mip.gurobi
+k3-8c-4s-v1-p2,chessboard,chessboard_n12_1,chessboard,1200038,357,Unknown,cp-sat

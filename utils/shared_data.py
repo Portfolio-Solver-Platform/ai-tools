@@ -23,6 +23,20 @@ def get_23_data():
     return convert(benchmark, instances)
 
 
+def get_mznc_data():
+    root = Path(__file__).resolve().parent.parent
+    benchmark = [
+        root / "portfolio-benchmarks/24-25/cpsat8-benchmark.csv",
+        root / "portfolio-benchmarks/24-25/best-static-benchmark-restart.csv",
+    ]
+    instances = [
+        Path("/home/sofus/speciale/ai/data/mznc2023_probs"),
+        Path("/home/sofus/speciale/ai/data/mznc2024_probs"),
+        Path("/home/sofus/speciale/ai/data/mznc2025_probs"),
+    ]
+    return convert(benchmark, instances)
+
+
 def prepare_labels(Y):
     max_real_time = np.nanmax(Y)
     timeout_penalty = max_real_time * 2
