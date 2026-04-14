@@ -1,9 +1,5 @@
 #!/usr/bin/env python3
-"""
-Borda scores for best-static bound-sharing configs vs. all solvers from combined.csv (2025).
-
-All solvers participate in pairwise scoring, but only bound-sharing configs are plotted.
-"""
+"""Borda scores for best-static bound-sharing configs vs. all solvers from combined.csv (2025, new run)."""
 
 import csv
 import sys
@@ -16,7 +12,7 @@ sys.path.insert(0, str(SCORING_DIR))
 from borda import load_problem_types, pairwise_score
 
 CSV_PATH = Path(__file__).resolve().parent.parent.parent.parent / "open-category-benchmarks" / "combined.csv"
-DATA_DIR = Path(__file__).resolve().parent.parent.parent / "parasol-benchmarks" / "best-static-bound-sharing"
+DATA_DIR = Path(__file__).resolve().parent.parent.parent / "parasol-benchmarks" / "new-bound-sharing" / "best-static-bound-sharing"
 TYPES_CSV = Path(__file__).resolve().parent.parent.parent.parent / "open-category-benchmarks" / "problem_types.csv"
 OUTPUT_FILE = Path(__file__).resolve().parent / "combined_borda_2025.typ"
 YEAR = "2025"
@@ -29,6 +25,9 @@ CONFIGS = [
     ("16s",  "best-static-bound-sharing-2025-16s"),
     ("32s",  "best-static-bound-sharing-2025-32s"),
     ("64s",  "best-static-bound-sharing-2025-64s"),
+    ("128s", "best-static-bound-sharing-2025-128s"),
+    ("256s", "best-static-bound-sharing-2025-256s"),
+    ("512s", "best-static-bound-sharing-2025-512s"),
 ]
 
 
@@ -62,7 +61,6 @@ def main():
             continue
         all_rows.extend(load_bound_sharing_rows(label, folder))
 
-    # Group by instance
     instances: dict[tuple, list[dict]] = defaultdict(list)
     for r in all_rows:
         key = (r["problem"], r["model"], r["name"])
@@ -99,7 +97,6 @@ def main():
     labels_typ = "(" + ", ".join(f'"{l}"' for l in labels) + ")"
     values_typ = "(" + ", ".join(f"{v:.2f}" for v in bs_scores) + ")"
 
-    # Zoom y-axis onto the range where the bound-sharing scores actually differ.
     spread = max(bs_scores) - min(bs_scores)
     pad = max(spread * 0.20, 1.0)
     ylim_low = max(0, min(bs_scores) - pad)

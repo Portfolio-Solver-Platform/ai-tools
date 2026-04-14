@@ -26,7 +26,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA_ROOT = ROOT / "parasol-benchmarks"
-TYPES_CSV = ROOT.parent / "scoring" / "problem_types.csv"
+TYPES_CSV = ROOT.parent / "open-category-benchmarks" / "problem_types.csv"
 
 TIMEOUT_MS = 1_200_000
 SOLVED_STATUSES = {"Optimal", "Unsat"}

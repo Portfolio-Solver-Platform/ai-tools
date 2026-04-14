@@ -1,9 +1,5 @@
 #!/usr/bin/env python3
-"""
-Borda scores for best-static bound-sharing configs vs. all solvers from combined.csv (2025).
-
-All solvers participate in pairwise scoring, but only bound-sharing configs are plotted.
-"""
+"""Generate a Typst/Lilaq plot comparing Borda scores across bound-sharing intervals (cpsat-chuffed)."""
 
 import csv
 import sys
@@ -15,29 +11,28 @@ sys.path.insert(0, str(SCORING_DIR))
 
 from borda import load_problem_types, pairwise_score
 
-CSV_PATH = Path(__file__).resolve().parent.parent.parent.parent / "open-category-benchmarks" / "combined.csv"
-DATA_DIR = Path(__file__).resolve().parent.parent.parent / "parasol-benchmarks" / "best-static-bound-sharing"
+DATA_DIR = Path(__file__).resolve().parent.parent.parent / "parasol-benchmarks" / "new-bound-sharing" / "cpsat-chuffed-bound-sharing"
 TYPES_CSV = Path(__file__).resolve().parent.parent.parent.parent / "open-category-benchmarks" / "problem_types.csv"
-OUTPUT_FILE = Path(__file__).resolve().parent / "combined_borda_2025.typ"
-YEAR = "2025"
+OUTPUT_FILE = Path(__file__).resolve().parent / "bound_sharing_borda.typ"
 
 CONFIGS = [
-    ("none", "best-static-bound-sharing-2025-none"),
-    ("2s",   "best-static-bound-sharing-2025-2s"),
-    ("4s",   "best-static-bound-sharing-2025-4s"),
-    ("8s",   "best-static-bound-sharing-2025-8s"),
-    ("16s",  "best-static-bound-sharing-2025-16s"),
-    ("32s",  "best-static-bound-sharing-2025-32s"),
-    ("64s",  "best-static-bound-sharing-2025-64s"),
+    ("none", "cpsat-chuffed-bound-sharing-2025-none"),
+    ("2s",   "cpsat-chuffed-bound-sharing-2025-2s"),
+    ("4s",   "cpsat-chuffed-bound-sharing-2025-4s"),
+    ("8s",   "cpsat-chuffed-bound-sharing-2025-8s"),
+    ("16s",  "cpsat-chuffed-bound-sharing-2025-16s"),
+    ("32s",  "cpsat-chuffed-bound-sharing-2025-32s"),
+    ("64s",  "cpsat-chuffed-bound-sharing-2025-64s"),
+    ("300s", "cpsat-chuffed-bound-sharing-2025-300s"),
 ]
 
 
-def load_bound_sharing_rows(label: str, folder: Path) -> list[dict]:
+def load_config_rows(folder: Path, config_label: str) -> list[dict]:
     rows = []
     with open(folder / "results.csv") as f:
         for row in csv.DictReader(f):
             rows.append({
-                "solver": f"bs-{label}",
+                "config": config_label,
                 "problem": row["problem"],
                 "name": row["name"],
                 "model": row["model"],
@@ -52,26 +47,24 @@ def main():
     problem_types = load_problem_types(TYPES_CSV)
 
     all_rows = []
-    with open(CSV_PATH) as f:
-        all_rows = [r for r in csv.DictReader(f) if r["year"] == YEAR]
-
     for label, folder_name in CONFIGS:
         folder = DATA_DIR / folder_name
         if not (folder / "results.csv").exists():
             print(f"Warning: {folder}/results.csv not found, skipping")
             continue
-        all_rows.extend(load_bound_sharing_rows(label, folder))
+        all_rows.extend(load_config_rows(folder, label))
 
-    # Group by instance
     instances: dict[tuple, list[dict]] = defaultdict(list)
     for r in all_rows:
-        key = (r["problem"], r["model"], r["name"])
+        key = (r["problem"], r["name"], r["model"])
         instances[key].append(r)
 
     scores: dict[str, float] = defaultdict(float)
     unknown_types: set[str] = set()
 
-    for (problem, model, name), group in instances.items():
+    for inst_key, group in instances.items():
+        problem = group[0]["problem"]
+        model = group[0]["model"]
         kind = problem_types.get((problem, model))
         if kind is None:
             unknown_types.add(f"{problem}/{model}")
@@ -80,7 +73,7 @@ def main():
             for j, s2 in enumerate(group):
                 if i == j:
                     continue
-                scores[s["solver"]] += pairwise_score(s, s2, kind)
+                scores[s["config"]] += pairwise_score(s, s2, kind)
 
     if unknown_types:
         print(f"WARNING: {len(unknown_types)} models not found in problem_types.csv:")
@@ -88,22 +81,20 @@ def main():
             print(f"  {m}")
         print()
 
-    print("All solver Borda scores (2025):")
-    for solver, score in sorted(scores.items(), key=lambda x: -x[1]):
-        marker = " <--" if solver.startswith("bs-") else ""
-        print(f"  {solver:<30s} {score:>10.2f}{marker}")
+    print("Borda scores by bound-sharing interval (cpsat-chuffed):")
+    for label, _ in CONFIGS:
+        print(f"  {label:>5s}: {scores.get(label, 0):,.2f}")
 
     labels = [label for label, _ in CONFIGS]
-    bs_scores = [scores.get(f"bs-{label}", 0) for label in labels]
+    values = [scores.get(label, 0) for label in labels]
 
     labels_typ = "(" + ", ".join(f'"{l}"' for l in labels) + ")"
-    values_typ = "(" + ", ".join(f"{v:.2f}" for v in bs_scores) + ")"
+    values_typ = "(" + ", ".join(f"{v:.2f}" for v in values) + ")"
 
-    # Zoom y-axis onto the range where the bound-sharing scores actually differ.
-    spread = max(bs_scores) - min(bs_scores)
+    spread = max(values) - min(values)
     pad = max(spread * 0.20, 1.0)
-    ylim_low = max(0, min(bs_scores) - pad)
-    ylim_high = max(bs_scores) + pad
+    ylim_low = max(0, min(values) - pad)
+    ylim_high = max(values) + pad
 
     typst = f"""\
 #import "@preview/lilaq:0.6.0" as lq
@@ -116,7 +107,7 @@ def main():
 #lq.diagram(
   width: 10cm,
   height: 6cm,
-  title: [Borda Score: best-static Bound-Sharing (vs.\\ All Solvers)],
+  title: [Borda Score by Bound-Sharing Interval (cp-sat + chuffed)],
   ylabel: [Borda score],
   xlabel: [Bound-sharing interval],
   ylim: ({ylim_low:.1f}, {ylim_high:.1f}),

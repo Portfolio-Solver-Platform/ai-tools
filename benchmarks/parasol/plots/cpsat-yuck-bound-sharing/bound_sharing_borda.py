@@ -13,7 +13,7 @@ sys.path.insert(0, str(SCORING_DIR))
 from borda import load_problem_types, pairwise_score
 
 DATA_DIR = Path(__file__).resolve().parent.parent.parent / "parasol-benchmarks" / "cpsat-yuck-bound-sharing"
-TYPES_CSV = SCORING_DIR / "problem_types.csv"
+TYPES_CSV = Path(__file__).resolve().parent.parent.parent.parent / "open-category-benchmarks" / "problem_types.csv"
 OUTPUT_FILE = Path(__file__).resolve().parent / "bound_sharing_borda.typ"
 
 CONFIGS = [
@@ -68,10 +68,11 @@ def main():
     unknown_types: set[str] = set()
 
     for inst_key, group in instances.items():
+        problem = group[0]["problem"]
         model = group[0]["model"]
-        kind = problem_types.get(model)
+        kind = problem_types.get((problem, model))
         if kind is None:
-            unknown_types.add(model)
+            unknown_types.add(f"{problem}/{model}")
             continue
 
         for i, s in enumerate(group):

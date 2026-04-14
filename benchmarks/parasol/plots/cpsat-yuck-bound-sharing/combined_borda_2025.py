@@ -17,7 +17,7 @@ from borda import load_problem_types, pairwise_score
 
 CSV_PATH = Path(__file__).resolve().parent.parent.parent.parent / "open-category-benchmarks" / "combined.csv"
 DATA_DIR = Path(__file__).resolve().parent.parent.parent / "parasol-benchmarks" / "cpsat-yuck-bound-sharing"
-TYPES_CSV = SCORING_DIR / "problem_types.csv"
+TYPES_CSV = Path(__file__).resolve().parent.parent.parent.parent / "open-category-benchmarks" / "problem_types.csv"
 OUTPUT_FILE = Path(__file__).resolve().parent / "combined_borda_2025.typ"
 YEAR = "2025"
 
@@ -78,9 +78,9 @@ def main():
     unknown_types: set[str] = set()
 
     for (problem, model, name), group in instances.items():
-        kind = problem_types.get(model)
+        kind = problem_types.get((problem, model))
         if kind is None:
-            unknown_types.add(model)
+            unknown_types.add(f"{problem}/{model}")
             continue
         for i, s in enumerate(group):
             for j, s2 in enumerate(group):
