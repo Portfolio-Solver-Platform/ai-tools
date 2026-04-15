@@ -96,3 +96,6 @@ k3-4c-4s-v1-p2,word-equations,word_equations_03_track_133-int,word_equations_03_
 k3-4c-4s-v1-p2,word-equations,word_equations_03_track_31-int,word_equations_03_track_31-int,1200000,,Unknown,
 k3-4c-4s-v1-p2,yumi-dynamic,p_4_GG_GG_yumi_grid_setup_5_5_zones,yumi-dynamic,472924,468,Optimal,org.chuffed.chuffed
 k3-4c-4s-v1-p2,yumi-dynamic,p_5_GG_GGG_yumi_grid_setup_5_5_zones,yumi-dynamic,1200105,556,Unknown,cp-sat
+k3-4c-4s-v1-p2,yumi-dynamic,p_5_GSS_SG_yumi_grid_setup_3_4_zones,yumi-dynamic,1200061,684,Unknown,cp-sat
+k3-4c-4s-v1-p2,yumi-dynamic,p_7_SSSS_SSS_yumi_grid_setup_3_3_zones,yumi-dynamic,1200128,1166,Unknown,cp-sat
+k3-4c-4s-v1-p2,yumi-dynamic,p_9_GSGS_GSGSG_yumi_grid_setup_7_7_zones,yumi-dynamic,1200623,1609,Unknown,cp-sat

@@ -87,3 +87,15 @@ k3-7c-7s-v4-p2,train-scheduling,trains18,trains,1200000,,Unknown,
 k3-7c-7s-v4-p2,triangular,n11,triangular,22200,22,Optimal,org.minizinc.mip.gurobi
 k3-7c-7s-v4-p2,triangular,n14,triangular,1200041,30,Unknown,cp-sat
 k3-7c-7s-v4-p2,triangular,n20,triangular,1200034,48,Unknown,cp-sat
+k3-7c-7s-v4-p2,triangular,n31,triangular,1200138,82,Unknown,cp-sat
+k3-7c-7s-v4-p2,triangular,n9,triangular,1235,17,Optimal,org.minizinc.mip.gurobi
+k3-7c-7s-v4-p2,word-equations,word_equations_01_track_123-int,word_equations_01_track_123-int,1332,,Unsat,org.gecode.gecode
+k3-7c-7s-v4-p2,word-equations,word_equations_01_track_140-int,word_equations_01_track_140-int,1839,3,Optimal,cp-sat
+k3-7c-7s-v4-p2,word-equations,word_equations_02_track_8-int,word_equations_02_track_8-int,1509,2,Optimal,cp-sat
+k3-7c-7s-v4-p2,word-equations,word_equations_03_track_133-int,word_equations_03_track_133-int,17813,23,Optimal,org.minizinc.mip.gurobi
+k3-7c-7s-v4-p2,word-equations,word_equations_03_track_31-int,word_equations_03_track_31-int,1200000,,Unknown,
+k3-7c-7s-v4-p2,yumi-dynamic,p_4_GG_GG_yumi_grid_setup_5_5_zones,yumi-dynamic,664480,468,Optimal,cp-sat
+k3-7c-7s-v4-p2,yumi-dynamic,p_5_GG_GGG_yumi_grid_setup_5_5_zones,yumi-dynamic,1200175,556,Unknown,cp-sat
+k3-7c-7s-v4-p2,yumi-dynamic,p_5_GSS_SG_yumi_grid_setup_3_4_zones,yumi-dynamic,1200128,683,Unknown,cp-sat
+k3-7c-7s-v4-p2,yumi-dynamic,p_7_SSSS_SSS_yumi_grid_setup_3_3_zones,yumi-dynamic,1200140,1154,Unknown,cp-sat
+k3-7c-7s-v4-p2,yumi-dynamic,p_9_GSGS_GSGSG_yumi_grid_setup_7_7_zones,yumi-dynamic,1200726,1596,Unknown,cp-sat

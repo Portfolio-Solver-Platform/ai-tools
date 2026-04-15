@@ -61,11 +61,11 @@ def generate_features_for_everything(problems_path, save_dict, n_workers=None):
 
 def _generate_one(args):
     model, instance, key = args
-    feature = generate_features(model, instance)
+    feature = generate_features(model, instance, key)
     return key, feature
 
 
-def generate_features(model: str, instance: str | None) -> np.ndarray:
+def generate_features(model: str, instance: str | None, key: str = "") -> np.ndarray:
     try:
         with tempfile.TemporaryDirectory() as tmpdir:
             fzn_path = os.path.join(tmpdir, "model.fzn")
@@ -80,17 +80,22 @@ def generate_features(model: str, instance: str | None) -> np.ndarray:
             else:
                 cmd.extend(['--output-mode', 'json'])
 
+            print(f"  [{key}] {' '.join(cmd)}", flush=True)
             p = subprocess.run(cmd, capture_output=True, timeout=300)
             if p.returncode != 0:
+                stderr = p.stderr.decode().strip().split('\n')[-1] if p.stderr else ""
+                print(f"  [{key}] FAIL compile (rc={p.returncode}): {stderr}", flush=True)
                 return None
 
             out = subprocess.run(['fzn2feat', fzn_path], capture_output=True, timeout=60)
             stdout = out.stdout.decode()
             if stdout == '' or 'nan' in stdout or 'inf' in stdout:
+                print(f"  [{key}] FAIL fzn2feat: empty={stdout == ''} nan={'nan' in stdout} inf={'inf' in stdout}", flush=True)
                 return None
             return np.array([[float(f) for f in stdout.split(',')]])
 
-    except Exception:
+    except Exception as e:
+        print(f"  [{key}] FAIL exception: {e}", flush=True)
         return None
 
 
