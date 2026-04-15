@@ -9,8 +9,10 @@ Usage:
     python train_svc_combos.py [n_extra]  # default 1 (= cp-sat + 1 portfolio)
 """
 import csv
+import os
 import pickle
 import sys
+from concurrent.futures import ProcessPoolExecutor, as_completed
 from itertools import combinations
 from pathlib import Path
 
@@ -114,16 +116,16 @@ def build_data(portfolio_csv, open_csv, types_csv):
     return X, borda_matrix, problems, all_schedule_names
 
 
-def evaluate_combo(X, borda_matrix, problems, schedule_indices):
-    """Run Optuna + GroupKFold for a specific combo of schedule indices.
-    Returns (best_borda, oracle_borda, optuna_study)."""
-    combo_borda = borda_matrix[schedule_indices]  # (k, n_instances)
-    labels = np.argmax(combo_borda, axis=0)       # best schedule per instance
+def _run_one(args):
+    """Worker function for parallel evaluation of a single combo."""
+    X, borda_matrix, problems, combo_indices, names = args
+
+    combo_borda = borda_matrix[combo_indices]  # (k, n_instances)
+    labels = np.argmax(combo_borda, axis=0)
     oracle_borda = combo_borda.max(axis=0).sum()
 
-    groups = problems
     gkf = GroupKFold(n_splits=N_FOLDS)
-    folds = list(gkf.split(X, labels, groups))
+    folds = list(gkf.split(X, labels, groups=problems))
 
     def objective(trial):
         C = trial.suggest_float("C", 0.1, 100, log=True)
@@ -137,7 +139,6 @@ def evaluate_combo(X, borda_matrix, problems, schedule_indices):
             ])
             pipe.fit(X[train_idx], labels[train_idx])
             preds = pipe.predict(X[test_idx])
-            # Sum Borda of predicted schedule for each test instance
             total_borda += sum(combo_borda[preds[i], test_idx[i]] for i in range(len(test_idx)))
 
         return total_borda
@@ -146,7 +147,7 @@ def evaluate_combo(X, borda_matrix, problems, schedule_indices):
     study = optuna.create_study(direction="maximize")
     study.optimize(objective, n_trials=N_TRIALS)
 
-    return study.best_value, oracle_borda, study
+    return names, study.best_value, oracle_borda, study.best_params
 
 
 def main():
@@ -163,16 +164,23 @@ def main():
     combos = list(combinations(portfolio_indices, n_extra))
     print(f"Combos: {len(combos)} (cp-sat + {n_extra} portfolios)")
 
-    results = []
-    for ci, extra in enumerate(combos):
+    n_workers = max(1, os.cpu_count() - 1)
+    print(f"Workers: {n_workers}")
+
+    tasks = []
+    for extra in combos:
         combo = [cpsat_idx] + list(extra)
         names = [schedule_names[i] for i in extra]
-        label = " + ".join(names)
-        print(f"\n[{ci+1}/{len(combos)}] cp-sat + {label}")
+        tasks.append((X, borda_matrix, problems, combo, names))
 
-        ai_borda, oracle_borda, study = evaluate_combo(X, borda_matrix, problems, combo)
-        print(f"  AI={ai_borda:.1f}  oracle={oracle_borda:.1f}")
-        results.append((names, ai_borda, oracle_borda, study.best_params))
+    results = []
+    with ProcessPoolExecutor(max_workers=n_workers) as pool:
+        futures = {pool.submit(_run_one, t): t[4] for t in tasks}
+        for i, future in enumerate(as_completed(futures), 1):
+            names, ai_borda, oracle_borda, params = future.result()
+            label = " + ".join(names)
+            print(f"  [{i}/{len(combos)}] cp-sat + {label}  AI={ai_borda:.1f}  oracle={oracle_borda:.1f}")
+            results.append((names, ai_borda, oracle_borda, params))
 
     # Summary
     results.sort(key=lambda r: r[1], reverse=True)
