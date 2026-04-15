@@ -1,16 +1,17 @@
 """
-For each portfolio combo (cp-sat(8c) + one portfolio schedule), train an SVC
+For each portfolio combo (cp-sat(8c) + N portfolio schedules), train an SVC
 to pick the best schedule per instance, evaluated by Borda score.
 
 Uses GroupKFold (k=5) by problem so test problems are never seen during training.
 Optuna tunes C/gamma per combo.
 
 Usage:
-    python train_svc_combos.py
+    python train_svc_combos.py [n_extra]  # default 1 (= cp-sat + 1 portfolio)
 """
 import csv
 import pickle
 import sys
+from itertools import combinations
 from pathlib import Path
 
 import numpy as np
@@ -157,27 +158,30 @@ def main():
     cpsat_solo_borda = borda_matrix[cpsat_idx].sum()
     print(f"cp-sat(8c) solo Borda: {cpsat_solo_borda:.1f}")
 
-    # Evaluate each portfolio paired with cp-sat
-    results = []
+    n_extra = int(sys.argv[1]) if len(sys.argv) > 1 else 1
     portfolio_indices = [i for i, n in enumerate(schedule_names) if n != FIXED[0]]
+    combos = list(combinations(portfolio_indices, n_extra))
+    print(f"Combos: {len(combos)} (cp-sat + {n_extra} portfolios)")
 
-    for pi in portfolio_indices:
-        name = schedule_names[pi]
-        combo = [cpsat_idx, pi]
-        solo_borda = borda_matrix[pi].sum()
-        print(f"\n--- cp-sat + {name} (solo={solo_borda:.1f}) ---")
+    results = []
+    for ci, extra in enumerate(combos):
+        combo = [cpsat_idx] + list(extra)
+        names = [schedule_names[i] for i in extra]
+        label = " + ".join(names)
+        print(f"\n[{ci+1}/{len(combos)}] cp-sat + {label}")
 
         ai_borda, oracle_borda, study = evaluate_combo(X, borda_matrix, problems, combo)
-        print(f"  AI={ai_borda:.1f}  oracle={oracle_borda:.1f}  C={study.best_params['C']:.3f}  gamma={study.best_params['gamma']:.4f}")
-        results.append((name, ai_borda, oracle_borda, solo_borda, study.best_params))
+        print(f"  AI={ai_borda:.1f}  oracle={oracle_borda:.1f}")
+        results.append((names, ai_borda, oracle_borda, study.best_params))
 
     # Summary
     results.sort(key=lambda r: r[1], reverse=True)
     print(f"\n{'='*70}")
-    print(f"{'Schedule':<35s} {'AI':>8s} {'Oracle':>8s} {'Solo':>8s} {'cp-sat':>8s}")
+    print(f"Top 20 by AI Borda (cp-sat + {n_extra} portfolios):")
     print(f"{'='*70}")
-    for name, ai, oracle, solo, _ in results:
-        print(f"{name:<35s} {ai:8.1f} {oracle:8.1f} {solo:8.1f} {cpsat_solo_borda:8.1f}")
+    for rank, (names, ai, oracle, _) in enumerate(results[:20], 1):
+        label = ", ".join(names)
+        print(f"  #{rank:2d}  AI={ai:.1f}  oracle={oracle:.1f}  [{label}]")
 
 
 if __name__ == "__main__":
