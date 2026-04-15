@@ -81,13 +81,13 @@ def generate_features(model: str, instance: str | None, key: str = "") -> np.nda
                 cmd.extend(['--output-mode', 'json'])
 
             print(f"  [{key}] {' '.join(cmd)}", flush=True)
-            p = subprocess.run(cmd, capture_output=True, timeout=300)
+            p = subprocess.run(cmd, capture_output=True)
             if p.returncode != 0:
                 stderr = p.stderr.decode().strip().split('\n')[-1] if p.stderr else ""
                 print(f"  [{key}] FAIL compile (rc={p.returncode}): {stderr}", flush=True)
                 return None
 
-            out = subprocess.run(['fzn2feat', fzn_path], capture_output=True, timeout=60)
+            out = subprocess.run(['fzn2feat', fzn_path], capture_output=True)
             stdout = out.stdout.decode()
             if stdout == '' or 'nan' in stdout or 'inf' in stdout:
                 print(f"  [{key}] FAIL fzn2feat: empty={stdout == ''} nan={'nan' in stdout} inf={'inf' in stdout}", flush=True)
