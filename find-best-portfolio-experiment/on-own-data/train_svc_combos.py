@@ -36,10 +36,10 @@ FIXED = ("cp-sat", CORES)  # always included
 
 
 def load_features():
-    """Load and merge feature dicts from both pickle files."""
+    """Load and merge feature dicts from per-year pickle files."""
     features = {}
-    for name in ["23_instances_features.pkl", "24_25_instances_features.pkl"]:
-        with open(DATA_DIR / name, "rb") as f:
+    for pkl in sorted(DATA_DIR.glob("mznc*_features.pkl")):
+        with open(pkl, "rb") as f:
             features.update(pickle.load(f))
     return features
 
