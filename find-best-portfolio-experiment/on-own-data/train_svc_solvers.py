@@ -1,12 +1,13 @@
 """
-For each portfolio combo (cp-sat(8c) + N portfolio schedules), train an SVC
-to pick the best schedule per instance, evaluated by Borda score.
+For each combo of open-category solvers (fixed + N extras), train an SVC
+to pick the best solver per instance, evaluated by Borda score.
 
 Uses GroupKFold (k=5) by problem so test problems are never seen during training.
 Optuna tunes C/gamma per combo.
 
 Usage:
-    python train_svc_combos.py <all|eligible> [n_extra]
+    python train_svc_solvers.py [n_extra]
+    python train_svc_solvers.py [n_extra] --no-fixed
 """
 import argparse
 import csv
@@ -32,14 +33,12 @@ OPEN_CSV = ROOT / "benchmarks/open-category-benchmarks/combined.csv"
 TYPES_CSV = ROOT / "benchmarks/open-category-benchmarks/problem_types.csv"
 DATA_DIR = ROOT / "data"
 
-CORES = 8
 N_FOLDS = 5
 N_TRIALS = 50
-FIXED = ("cp-sat", CORES)  # always included
+FIXED = ("cp-sat", 8)
 
 
 def load_features():
-    """Load and merge feature dicts from per-year pickle files."""
     features = {}
     for pkl in sorted(DATA_DIR.glob("mznc*_features.pkl")):
         with open(pkl, "rb") as f:
@@ -47,51 +46,24 @@ def load_features():
     return features
 
 
-def instance_key(row):
-    m, n = row["model"], row["name"]
-    return f"{m}_{n}" if m != n else f"{m}_"
-
-
-def build_data(portfolio_csv, open_csv, types_csv):
-    """Build feature matrix X, Borda score matrix, instance metadata."""
-    # Load all rows and compute Borda scores
-    with open(portfolio_csv) as f:
-        portfolio_rows = list(csv.DictReader(f))
+def build_data(open_csv, types_csv):
     with open(open_csv) as f:
-        open_rows = list(csv.DictReader(f))
+        rows = list(csv.DictReader(f))
 
-    # Adapt portfolio rows for borda_scores
-    adapted = []
-    for r in portfolio_rows:
-        adapted.append({
-            "solver": r["schedule"], "cores": CORES,
-            "problem": r["problem"], "name": r["name"], "model": r["model"],
-            "status": r["status"], "time_ms": r["time_ms"],
-            "objective": r["objective"], "wrong": r["wrong"],
-        })
-
-    all_rows = adapted + open_rows
     problem_types = load_problem_types(types_csv)
-    open_configs = {(r["solver"], int(r["cores"])) for r in open_rows if r["open_category"] == "True"}
-
-    scores, configs, instances = borda_scores(all_rows, problem_types, opponents=open_configs)
+    open_configs = {(r["solver"], int(r["cores"])) for r in rows if r["open_category"] == "True"}
+    scores, configs, instances = borda_scores(rows, problem_types, opponents=open_configs)
     config_idx = {c: i for i, c in enumerate(configs)}
 
-    # Load features
     features = load_features()
 
     # Build aligned arrays: only instances that have features
-    schedules = sorted(set(r["schedule"] for r in portfolio_rows))
-    schedule_configs = [(s, CORES) for s in schedules]
-
-    # Instance ordering: (problem, name) from borda output
-    instance_keys_list = []  # feature keys
-    instance_problems = []   # problem name (for grouping)
-    instance_idxs = []       # index into borda scores array
+    instance_keys_list = []
+    instance_problems = []
+    instance_idxs = []
     for i, (problem, name) in enumerate(instances):
-        # Find model for this instance
         model = None
-        for r in portfolio_rows:
+        for r in rows:
             if r["problem"] == problem and r["name"] == name:
                 model = r["model"]
                 break
@@ -105,22 +77,21 @@ def build_data(portfolio_csv, open_csv, types_csv):
     problems = np.array(instance_problems)
     inst_idxs = np.array(instance_idxs)
 
-    # Borda score matrix: (n_schedules, n_instances) for our instances
-    all_schedule_configs = [FIXED] + schedule_configs
-    all_schedule_names = [FIXED[0]] + schedules
-    borda_matrix = np.zeros((len(all_schedule_configs), len(inst_idxs)))
-    for si, cfg in enumerate(all_schedule_configs):
+    # Borda score matrix for open-category solvers
+    solver_configs = sorted(open_configs)
+    solver_names = [f"{s}({c}c)" for s, c in solver_configs]
+    borda_matrix = np.zeros((len(solver_configs), len(inst_idxs)))
+    for si, cfg in enumerate(solver_configs):
         ci = config_idx[cfg]
         borda_matrix[si] = scores[ci, inst_idxs]
 
-    return X, borda_matrix, problems, all_schedule_names
+    return X, borda_matrix, problems, solver_names, solver_configs
 
 
 def _run_one(args):
-    """Worker function for parallel evaluation of a single combo."""
     X, borda_matrix, problems, combo_indices, names = args
 
-    combo_borda = borda_matrix[combo_indices]  # (k, n_instances)
+    combo_borda = borda_matrix[combo_indices]
     labels = np.argmax(combo_borda, axis=0)
     oracle_borda = combo_borda.max(axis=0).sum()
 
@@ -152,34 +123,45 @@ def _run_one(args):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("dataset", choices=["all", "eligible"],
-                        help="Which portfolio dataset to use")
-    parser.add_argument("n_extra", nargs="?", type=int, default=1,
-                        help="Number of extra portfolios (default: 1)")
+    parser.add_argument("n_extra", type=int, help="Number of extra solvers beyond the fixed one")
+    parser.add_argument("--no-fixed", action="store_true",
+                        help="No fixed solver; pick n_extra solvers freely")
     args = parser.parse_args()
 
-    portfolio_csv = ROOT / "benchmarks" / "portfolios" / args.dataset / "combined.csv"
-    print(f"Dataset: {args.dataset}")
     print("Loading data...")
-    X, borda_matrix, problems, schedule_names = build_data(portfolio_csv, OPEN_CSV, TYPES_CSV)
-    print(f"Instances: {X.shape[0]}, Features: {X.shape[1]}, Schedules: {len(schedule_names)}")
+    X, borda_matrix, problems, solver_names, solver_configs = build_data(OPEN_CSV, TYPES_CSV)
+    print(f"Instances: {X.shape[0]}, Features: {X.shape[1]}, Solvers: {len(solver_names)}")
 
-    cpsat_idx = schedule_names.index(FIXED[0])
-    cpsat_solo_borda = borda_matrix[cpsat_idx].sum()
-    print(f"cp-sat(8c) solo Borda: {cpsat_solo_borda:.1f}")
+    if args.no_fixed:
+        k = args.n_extra
+        candidate_idxs = list(range(len(solver_names)))
+        combos = list(combinations(candidate_idxs, k))
+        fixed_label = ""
+        print(f"Mode: best {k} from {len(solver_names)} solvers (no fixed)")
+    else:
+        fixed_cfg = FIXED
+        fixed_name = f"{fixed_cfg[0]}({fixed_cfg[1]}c)"
+        fixed_idx = solver_names.index(fixed_name)
+        fixed_borda = borda_matrix[fixed_idx].sum()
+        print(f"Fixed: {fixed_name} (solo Borda: {fixed_borda:.1f})")
 
-    n_extra = args.n_extra
-    portfolio_indices = [i for i, n in enumerate(schedule_names) if n != FIXED[0]]
-    combos = list(combinations(portfolio_indices, n_extra))
-    print(f"Combos: {len(combos)} (cp-sat + {n_extra} portfolios)")
+        candidate_idxs = [i for i in range(len(solver_names)) if i != fixed_idx]
+        combos = list(combinations(candidate_idxs, args.n_extra))
+        fixed_label = f"{fixed_name} + "
+        print(f"Mode: {fixed_name} + best {args.n_extra} from {len(candidate_idxs)} solvers")
+
+    print(f"Combos: {len(combos)}")
 
     n_workers = max(1, os.cpu_count() - 1)
     print(f"Workers: {n_workers}")
 
     tasks = []
     for extra in combos:
-        combo = [cpsat_idx] + list(extra)
-        names = [schedule_names[i] for i in extra]
+        if args.no_fixed:
+            combo = list(extra)
+        else:
+            combo = [fixed_idx] + list(extra)
+        names = [solver_names[i] for i in extra]
         tasks.append((X, borda_matrix, problems, combo, names))
 
     results = []
@@ -188,17 +170,16 @@ def main():
         for i, future in enumerate(as_completed(futures), 1):
             names, ai_borda, oracle_borda, params = future.result()
             label = " + ".join(names)
-            print(f"  [{i}/{len(combos)}] cp-sat + {label}  AI={ai_borda:.1f}  oracle={oracle_borda:.1f}")
+            print(f"  [{i}/{len(combos)}] {fixed_label}{label}  AI={ai_borda:.1f}  oracle={oracle_borda:.1f}")
             results.append((names, ai_borda, oracle_borda, params))
 
-    # Summary
     results.sort(key=lambda r: r[1], reverse=True)
     print(f"\n{'='*70}")
-    print(f"Top 20 by AI Borda (cp-sat + {n_extra} portfolios):")
+    print(f"Top 20 by AI Borda ({fixed_label}{args.n_extra} solvers):")
     print(f"{'='*70}")
     for rank, (names, ai, oracle, _) in enumerate(results[:20], 1):
         label = ", ".join(names)
-        print(f"  #{rank:2d}  AI={ai:.1f}  oracle={oracle:.1f}  [cp-sat, {label}]")
+        print(f"  #{rank:2d}  AI={ai:.1f}  oracle={oracle:.1f}  [{fixed_label}{label}]")
 
 
 if __name__ == "__main__":
