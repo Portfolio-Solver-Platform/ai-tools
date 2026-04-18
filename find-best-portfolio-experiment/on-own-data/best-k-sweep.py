@@ -6,8 +6,9 @@ Sweep k=1..6 and find the best combo by oracle+floor and oracle+mean.
 - Mean:   mean per instance (AI picks randomly)
 
 Usage:
-    python best-k-sweep.py
+    python best-k-sweep.py <all|eligible>
 """
+import argparse
 import csv
 import math
 import sys
@@ -20,7 +21,6 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 from utils.borda import borda_scores, load_problem_types
 
 ROOT = Path(__file__).resolve().parent.parent.parent
-PORTFOLIO_CSV = ROOT / "benchmarks/portfolios/combined.csv"
 OPEN_CSV = ROOT / "benchmarks/open-category-benchmarks/combined.csv"
 TYPES_CSV = ROOT / "benchmarks/open-category-benchmarks/problem_types.csv"
 
@@ -75,7 +75,13 @@ def find_best(score_vecs, k, metrics, top_n=10):
 
 
 if __name__ == "__main__":
-    portfolio_rows = load_portfolio_rows(PORTFOLIO_CSV)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("dataset", choices=["all", "eligible"],
+                        help="Which portfolio dataset to use")
+    args = parser.parse_args()
+
+    portfolio_csv = ROOT / "benchmarks" / "portfolios" / args.dataset / "combined.csv"
+    portfolio_rows = load_portfolio_rows(portfolio_csv)
     open_rows = load_open_rows(OPEN_CSV)
 
     all_rows = portfolio_rows + open_rows

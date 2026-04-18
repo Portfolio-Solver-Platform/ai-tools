@@ -58,7 +58,7 @@ def main():
 #lq.diagram(
   width: 10cm,
   height: 6cm,
-  title: [Time Saved vs.\\ No Bound Sharing (cp-sat + chuffed)],
+  title: [Time Saved vs.\\ No Bound Sharing (cp-sat + chuffed, baseline: {baseline_s:,.0f}s)],
   ylabel: [Time saved (s)],
   xlabel: [Bound-sharing interval],
   xscale: "log",

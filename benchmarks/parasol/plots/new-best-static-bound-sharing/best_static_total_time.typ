@@ -8,7 +8,7 @@
 #lq.diagram(
   width: 10cm,
   height: 6cm,
-  title: [Time Saved vs.\ No Bound Sharing (best-static)],
+  title: [Time Saved vs.\ No Bound Sharing (best-static, baseline: 47,180s)],
   ylabel: [Time saved (s)],
   xlabel: [Bound-sharing interval],
   xscale: "log",

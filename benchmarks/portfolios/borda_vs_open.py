@@ -6,8 +6,10 @@ against the 15 open-category opponents, same as best-k-portfolios.py does
 for individual solvers.
 
 Usage:
-    python borda_vs_open.py
+    python borda_vs_open.py all/
+    python borda_vs_open.py eligible/
 """
+import argparse
 import csv
 import sys
 from pathlib import Path
@@ -17,11 +19,17 @@ from utils.borda import borda_scores, load_problem_types
 
 ROOT = Path(__file__).resolve().parent.parent.parent
 OPEN_CSV = ROOT / "benchmarks" / "open-category-benchmarks" / "combined.csv"
-PORTFOLIO_CSV = Path(__file__).resolve().parent / "combined.csv"
 TYPES_CSV = ROOT / "benchmarks" / "open-category-benchmarks" / "problem_types.csv"
 
 
 def main():
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("data_dir", type=Path,
+                    help="data directory (e.g. all/ or eligible/)")
+    args = ap.parse_args()
+
+    portfolio_csv = args.data_dir / "combined.csv"
+
     problem_types = load_problem_types(TYPES_CSV)
 
     # Load open-category rows
@@ -31,7 +39,7 @@ def main():
     open_category = {(r["solver"], int(r["cores"])) for r in open_rows if r["open_category"] == "True"}
 
     # Load portfolio rows, renaming schedule -> solver
-    with open(PORTFOLIO_CSV) as f:
+    with open(portfolio_csv) as f:
         for r in csv.DictReader(f):
             open_rows.append({
                 "solver": r["schedule"],
@@ -49,13 +57,13 @@ def main():
 
     # Separate portfolio configs from solver configs
     portfolio_schedules = set()
-    with open(PORTFOLIO_CSV) as f:
+    with open(portfolio_csv) as f:
         for r in csv.DictReader(f):
             portfolio_schedules.add(r["schedule"])
 
     # Per-instance year mapping for per-year breakdown
     instance_year = {}
-    with open(PORTFOLIO_CSV) as f:
+    with open(portfolio_csv) as f:
         for r in csv.DictReader(f):
             instance_year[(r["problem"], r["name"])] = r["year"]
 

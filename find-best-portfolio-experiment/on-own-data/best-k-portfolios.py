@@ -24,9 +24,12 @@ EXCLUDED_SOLVERS = {
     # "org.minizinc.mip.highs",
     # "izplus",
     # "org.choco.choco",
+    "org.chuffed.chuffed",
+    "org.gecode.gecode",
+    "solutions.huub",
 }
 
-MAX_SOLVERS_PER_PORTFOLIO = 4
+MAX_SOLVERS_PER_PORTFOLIO = 8
 MAX_CORES = 8
 
 

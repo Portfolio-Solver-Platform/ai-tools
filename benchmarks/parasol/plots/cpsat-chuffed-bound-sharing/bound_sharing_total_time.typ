@@ -8,7 +8,7 @@
 #lq.diagram(
   width: 10cm,
   height: 6cm,
-  title: [Time Saved vs.\ No Bound Sharing (cp-sat + chuffed)],
+  title: [Time Saved vs.\ No Bound Sharing (cp-sat + chuffed, baseline: 53,733s)],
   ylabel: [Time saved (s)],
   xlabel: [Bound-sharing interval],
   xscale: "log",

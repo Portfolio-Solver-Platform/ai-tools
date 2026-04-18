@@ -6,8 +6,9 @@ Uses GroupKFold (k=5) by problem so test problems are never seen during training
 Optuna tunes C/gamma per combo.
 
 Usage:
-    python train_svc_combos.py [n_extra]  # default 1 (= cp-sat + 1 portfolio)
+    python train_svc_combos.py <all|eligible> [n_extra]
 """
+import argparse
 import csv
 import os
 import pickle
@@ -27,7 +28,6 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 from utils.borda import borda_scores, load_problem_types
 
 ROOT = Path(__file__).resolve().parent.parent.parent
-PORTFOLIO_CSV = ROOT / "benchmarks/portfolios/combined.csv"
 OPEN_CSV = ROOT / "benchmarks/open-category-benchmarks/combined.csv"
 TYPES_CSV = ROOT / "benchmarks/open-category-benchmarks/problem_types.csv"
 DATA_DIR = ROOT / "data"
@@ -151,15 +151,24 @@ def _run_one(args):
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("dataset", choices=["all", "eligible"],
+                        help="Which portfolio dataset to use")
+    parser.add_argument("n_extra", nargs="?", type=int, default=1,
+                        help="Number of extra portfolios (default: 1)")
+    args = parser.parse_args()
+
+    portfolio_csv = ROOT / "benchmarks" / "portfolios" / args.dataset / "combined.csv"
+    print(f"Dataset: {args.dataset}")
     print("Loading data...")
-    X, borda_matrix, problems, schedule_names = build_data(PORTFOLIO_CSV, OPEN_CSV, TYPES_CSV)
+    X, borda_matrix, problems, schedule_names = build_data(portfolio_csv, OPEN_CSV, TYPES_CSV)
     print(f"Instances: {X.shape[0]}, Features: {X.shape[1]}, Schedules: {len(schedule_names)}")
 
     cpsat_idx = schedule_names.index(FIXED[0])
     cpsat_solo_borda = borda_matrix[cpsat_idx].sum()
     print(f"cp-sat(8c) solo Borda: {cpsat_solo_borda:.1f}")
 
-    n_extra = int(sys.argv[1]) if len(sys.argv) > 1 else 1
+    n_extra = args.n_extra
     portfolio_indices = [i for i, n in enumerate(schedule_names) if n != FIXED[0]]
     combos = list(combinations(portfolio_indices, n_extra))
     print(f"Combos: {len(combos)} (cp-sat + {n_extra} portfolios)")

@@ -6,13 +6,13 @@ For Unsat: uses the solver that claimed =====UNSATISFIABLE=====
 For Optimal: uses the solver that claimed ==========
 
 Usage:
-    python fix_last_result.py
+    python fix_last_result.py all/
+    python fix_last_result.py eligible/
 """
+import argparse
 import csv
 import re
 from pathlib import Path
-
-PORTFOLIOS_DIR = Path(__file__).parent / "portfolios"
 
 STATUS_PATTERNS = {
     "Unsat": r"% NOTE: (.+?) got status =====UNSATISFIABLE=====",
@@ -21,10 +21,16 @@ STATUS_PATTERNS = {
 
 
 def main():
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("data_dir", type=Path,
+                    help="data directory (e.g. all/ or eligible/)")
+    args = ap.parse_args()
+
+    portfolios_dir = args.data_dir / "portfolios"
     fixed = 0
     total = 0
 
-    for csv_path in sorted(PORTFOLIOS_DIR.rglob("results.csv")):
+    for csv_path in sorted(portfolios_dir.rglob("results.csv")):
         rows = []
         changed = False
 

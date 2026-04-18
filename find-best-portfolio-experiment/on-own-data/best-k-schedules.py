@@ -5,8 +5,9 @@ Unlike best-k-portfolios.py which generates hypothetical portfolios from
 individual solver configs, this uses actual measured portfolio results.
 
 Usage:
-    python best-k-schedules.py [k]    # k = number of extra schedules (default 1)
+    python best-k-schedules.py <all|eligible> [k]
 """
+import argparse
 import csv
 import heapq
 import itertools
@@ -21,7 +22,6 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 from utils.borda import borda_scores, load_problem_types
 
 ROOT = Path(__file__).resolve().parent.parent.parent
-PORTFOLIO_CSV = ROOT / "benchmarks/portfolios/combined.csv"
 OPEN_CSV = ROOT / "benchmarks/open-category-benchmarks/combined.csv"
 TYPES_CSV = ROOT / "benchmarks/open-category-benchmarks/problem_types.csv"
 
@@ -55,7 +55,7 @@ def load_open_rows(path):
         return list(csv.DictReader(f))
 
 
-def best_k_schedules(score_vecs, schedules, k=1, top_n=1000, baseline=None):
+def best_k_schedules(score_vecs, schedules, k=1, top_n=30, baseline=None):
     n = len(schedules)
     heap = []
 
@@ -92,7 +92,15 @@ def best_k_schedules(score_vecs, schedules, k=1, top_n=1000, baseline=None):
 
 
 if __name__ == "__main__":
-    portfolio_rows = load_portfolio_rows(PORTFOLIO_CSV)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("dataset", choices=["all", "eligible"],
+                        help="Which portfolio dataset to use")
+    parser.add_argument("k", nargs="?", type=int, default=1,
+                        help="Number of extra schedules (default: 1)")
+    args = parser.parse_args()
+
+    portfolio_csv = ROOT / "benchmarks" / "portfolios" / args.dataset / "combined.csv"
+    portfolio_rows = load_portfolio_rows(portfolio_csv)
     open_rows = load_open_rows(OPEN_CSV)
 
     # Combine: portfolios compete against open-category solvers
@@ -104,15 +112,16 @@ if __name__ == "__main__":
 
     config_idx = {c: i for i, c in enumerate(configs)}
 
-    # Portfolio schedules + open-category 8-core solvers
+    # Portfolio schedules + cp-sat 8-core solver
     portfolio_configs = [(s, CORES) for s in sorted(set(r["solver"] for r in portfolio_rows))]
-    solver_8c_configs = sorted(c for c in open_configs if c[1] == CORES)
+    solver_8c_configs = sorted(c for c in open_configs if c[1] == CORES and c[0] == "cp-sat")
     all_candidates = portfolio_configs + solver_8c_configs
     schedule_names = [c[0] for c in all_candidates]
     schedule_idxs = [config_idx[c] for c in all_candidates]
     schedule_scores = scores[schedule_idxs]
     n_portfolios = len(portfolio_configs)
 
+    print(f"Dataset: {args.dataset}")
     print(f"Portfolios: {n_portfolios}, Solvers(8c): {len(solver_8c_configs)}, Instances: {len(instances)}")
     print(f"Open-category opponents: {len(open_configs)}")
 
@@ -137,8 +146,7 @@ if __name__ == "__main__":
     remaining_scores = schedule_scores[remaining_idxs]
     remaining_names = [schedule_names[i] for i in remaining_idxs]
 
-    k = int(sys.argv[1]) if len(sys.argv) > 1 else 1
-    results = best_k_schedules(remaining_scores, remaining_names, k=k, baseline=baseline)
+    results = best_k_schedules(remaining_scores, remaining_names, k=args.k, baseline=baseline)
 
     for rank, (s, robustness, picked) in enumerate(results, 1):
         print(f"\n#{rank:2d}  score={s:.1f}  min_individual={robustness:.1f}")

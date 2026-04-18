@@ -10,17 +10,17 @@ A portfolio result is wrong if:
     feasible solution (wrong_optimal)
 
 Usage:
-    python generate_wrong_results.py
+    python generate_wrong_results.py all/
+    python generate_wrong_results.py eligible/
 """
+import argparse
 import csv
 from collections import defaultdict, Counter
 from pathlib import Path
 
 ROOT = Path(__file__).parent.parent
-PORTFOLIO_CSV = Path(__file__).parent / "combined.csv"
 OPEN_CSV = ROOT / "open-category-benchmarks" / "combined.csv"
 TYPES_CSV = ROOT / "open-category-benchmarks" / "problem_types.csv"
-OUTPUT_CSV = Path(__file__).parent / "wrong_results.csv"
 
 TRUSTED_SOLVERS = {"org.gecode.gecode", "org.chuffed.chuffed", "cp-sat"}
 SOLVED_STATUSES = {"Satisfied", "Optimal"}
@@ -35,6 +35,14 @@ def load_problem_types(path):
 
 
 def main():
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("data_dir", type=Path,
+                    help="data directory (e.g. all/ or eligible/)")
+    args = ap.parse_args()
+
+    portfolio_csv = args.data_dir / "combined.csv"
+    output_csv = args.data_dir / "wrong_results.csv"
+
     problem_types = load_problem_types(TYPES_CSV)
 
     # Build ground truth from open-category trusted solvers
@@ -75,7 +83,7 @@ def main():
     # Check portfolio results against ground truth
     wrong_rows = []
 
-    with open(PORTFOLIO_CSV) as f:
+    with open(portfolio_csv) as f:
         for r in csv.DictReader(f):
             key = (r["year"], r["problem"], r["name"])
             kind = problem_types.get((r["problem"], r["model"]))
@@ -125,13 +133,13 @@ def main():
 
     wrong_rows.sort(key=lambda r: (r["schedule"], r["year"], r["problem"], r["name"]))
 
-    with open(OUTPUT_CSV, "w", newline="") as f:
+    with open(output_csv, "w", newline="") as f:
         w = csv.DictWriter(f, fieldnames=["schedule", "year", "problem", "name", "reason", "last_result_from"])
         w.writeheader()
         w.writerows(wrong_rows)
 
     reason_counts = Counter(r["reason"] for r in wrong_rows)
-    print(f"Wrote {len(wrong_rows)} wrong results to {OUTPUT_CSV}")
+    print(f"Wrote {len(wrong_rows)} wrong results to {output_csv}")
     for reason, count in reason_counts.most_common():
         print(f"  {reason}: {count}")
 

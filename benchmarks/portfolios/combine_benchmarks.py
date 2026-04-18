@@ -8,16 +8,14 @@ Each portfolio folder contains either:
 The year is extracted from the leaf folder name (last -YYYY suffix).
 
 Usage:
-    python combine_benchmarks.py
+    python combine_benchmarks.py all/        # all/portfolios/ → all/combined.csv
+    python combine_benchmarks.py eligible/   # eligible/portfolios/ → eligible/combined.csv
 """
+import argparse
 import csv
 import re
 from collections import defaultdict
 from pathlib import Path
-
-BASE = Path(__file__).parent
-PORTFOLIOS_DIR = BASE / "portfolios"
-OUT_PATH = BASE / "combined.csv"
 
 OUTPUT_FIELDS = ["schedule", "year", "problem", "name", "model",
                  "time_ms", "objective", "status", "last_result_from"]
@@ -32,9 +30,18 @@ EXPECTED_INSTANCES = 300
 
 
 def main():
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("data_dir", type=Path,
+                    help="data directory (e.g. all/ or eligible/)")
+    args = ap.parse_args()
+
+    base = args.data_dir
+    portfolios_dir = base / "portfolios"
+    out_path = base / "combined.csv"
+
     by_schedule = defaultdict(list)
 
-    for csv_path in sorted(PORTFOLIOS_DIR.rglob("results.csv")):
+    for csv_path in sorted(portfolios_dir.rglob("results.csv")):
         year = extract_year(csv_path.parent.name)
         if year is None:
             print(f"WARNING: can't extract year from {csv_path.parent.name}, skipping")
@@ -63,13 +70,13 @@ def main():
 
     all_rows.sort(key=lambda r: (r["schedule"], int(r["year"]), r["problem"], r["name"]))
 
-    with open(OUT_PATH, "w", newline="") as f:
+    with open(out_path, "w", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=OUTPUT_FIELDS)
         writer.writeheader()
         writer.writerows(all_rows)
 
     schedules = {r["schedule"] for r in all_rows}
-    print(f"{len(all_rows)} rows from {len(schedules)} schedules written to {OUT_PATH}")
+    print(f"{len(all_rows)} rows from {len(schedules)} schedules written to {out_path}")
 
 
 if __name__ == "__main__":
