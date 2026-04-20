@@ -8,7 +8,7 @@ import numpy as np
 from tqdm import tqdm
 
 
-def generate_features_for_everything(problems_path, save_dict, n_workers=None):
+def _build_jobs(problems_path):
     jobs = []
     for sub_folder in sorted(os.listdir(problems_path)):
         sub_folder_path = os.path.join(problems_path, sub_folder)
@@ -36,6 +36,11 @@ def generate_features_for_everything(problems_path, save_dict, n_workers=None):
                     instance_name = os.path.basename(instance)
                     key = sub_folder + "_" + ".".join(model.split(".")[:-1]) + "_" + ".".join(instance_name.split(".")[:-1])
                     jobs.append((model_path, instance_path, key))
+    return jobs
+
+
+def generate_features_for_everything(problems_path, save_dict, n_workers=None):
+    jobs = _build_jobs(problems_path)
 
     if not jobs:
         print("No instances found")
