@@ -26,7 +26,7 @@ def generate_features_for_everything(problems_path, save_dict, n_workers=None):
         if not instances:
             for model in models:
                 model_path = os.path.join(sub_folder_path, model)
-                key = ".".join(model.split(".")[:-1]) + "_"
+                key = sub_folder + "_" + ".".join(model.split(".")[:-1]) + "_"
                 jobs.append((model_path, None, key))
         else:
             for model in models:
@@ -34,7 +34,7 @@ def generate_features_for_everything(problems_path, save_dict, n_workers=None):
                     model_path = os.path.join(sub_folder_path, model)
                     instance_path = os.path.join(sub_folder_path, instance)
                     instance_name = os.path.basename(instance)
-                    key = ".".join(model.split(".")[:-1]) + "_" + ".".join(instance_name.split(".")[:-1])
+                    key = sub_folder + "_" + ".".join(model.split(".")[:-1]) + "_" + ".".join(instance_name.split(".")[:-1])
                     jobs.append((model_path, instance_path, key))
 
     if not jobs:
