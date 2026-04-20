@@ -12,7 +12,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 from utils.raw_data_to_training_data.generate_features import generate_features_for_everything
 
 DATA_DIR = Path(__file__).resolve().parent.parent.parent / "data" / "psp_features"
-DEFAULT_PROBLEMS = Path.home() / "speciale/ai/psp/problems"
+DEFAULT_PROBLEMS = Path.home() / "speciale/psp/problems"
 
 
 def main():
