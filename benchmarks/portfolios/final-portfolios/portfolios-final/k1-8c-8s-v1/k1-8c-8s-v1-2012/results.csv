@@ -12,10 +12,10 @@ k1-8c-8s-v1,amaze2,2012-06-28,amaze2,2350,,Optimal,org.picat-lang.picat
 k1-8c-8s-v1,amaze2,2012-06-29,amaze2,57728,,Optimal,org.picat-lang.picat
 k1-8c-8s-v1,amaze2,2012-07-04,amaze2,12759,,Optimal,org.picat-lang.picat
 k1-8c-8s-v1,carpet-cutting,mzn_rnd_test.05,cc_base,63162,1122,Optimal,org.chuffed.chuffed
-k1-8c-8s-v1,carpet-cutting,mzn_rnd_test.10,cc_base,1200128,3992,Unknown,cp-sat
-k1-8c-8s-v1,carpet-cutting,mzn_rnd_test.14,cc_base,1200059,1869,Unknown,cp-sat
+k1-8c-8s-v1,carpet-cutting,mzn_rnd_test.10,cc_base,1200000,3992,Unknown,cp-sat
+k1-8c-8s-v1,carpet-cutting,mzn_rnd_test.14,cc_base,1200000,1869,Unknown,cp-sat
 k1-8c-8s-v1,carpet-cutting,mzn_rnd_test.16,cc_base,50447,1151,Optimal,org.chuffed.chuffed
-k1-8c-8s-v1,carpet-cutting,mzn_rnd_test.17,cc_base,1200102,1964,Unknown,cp-sat
+k1-8c-8s-v1,carpet-cutting,mzn_rnd_test.17,cc_base,1200000,1964,Unknown,cp-sat
 k1-8c-8s-v1,fast-food,ff3,fastfood,2559,1330,Optimal,cp-sat
 k1-8c-8s-v1,fast-food,ff58,fastfood,20296,1154,Optimal,org.gecode.gecode
 k1-8c-8s-v1,fast-food,ff59,fastfood,2603,242,Optimal,cp-sat
@@ -53,7 +53,7 @@ k1-8c-8s-v1,parity-learning,52_26_6.3,parity-learning,7296,1,Optimal,org.picat-l
 k1-8c-8s-v1,pattern-set-mining-k1,ionosphere,pattern_set_mining_k1,21306,195,Optimal,org.minizinc.mip.gurobi
 k1-8c-8s-v1,pattern-set-mining-k1,mushroom,pattern_set_mining_k1,81261,3288,Optimal,org.gecode.gecode
 k1-8c-8s-v1,pattern-set-mining-k2,audiology,pattern_set_mining_k2,3930,54,Optimal,cp-sat
-k1-8c-8s-v1,pattern-set-mining-k2,german-credit,pattern_set_mining_k2,1200103,427,Unknown,cp-sat
+k1-8c-8s-v1,pattern-set-mining-k2,german-credit,pattern_set_mining_k2,1200000,427,Unknown,cp-sat
 k1-8c-8s-v1,pattern-set-mining-k2,segment,pattern_set_mining_k2,64534,327,Optimal,cp-sat
 k1-8c-8s-v1,project-planning,ProjectPlannertest_12_8,ProjectPlannertest_12_8,3075,17,Optimal,org.chuffed.chuffed
 k1-8c-8s-v1,project-planning,ProjectPlannertest_13_6,ProjectPlannertest_13_6,4767,25,Optimal,org.chuffed.chuffed
@@ -65,7 +65,7 @@ k1-8c-8s-v1,radiation,m06_15_15,radiation,1900,711,Optimal,org.minizinc.mip.guro
 k1-8c-8s-v1,radiation,m07_07_20,radiation,1115,856,Optimal,org.minizinc.mip.gurobi
 k1-8c-8s-v1,radiation,m12_10_20,radiation,121235,5086,Optimal,org.picat-lang.picat
 k1-8c-8s-v1,radiation,m18_12_05,radiation,304630,17566,Optimal,org.minizinc.mip.gurobi
-k1-8c-8s-v1,radiation,m40_10_02,radiation,1200095,155330,Unknown,org.minizinc.mip.gurobi
+k1-8c-8s-v1,radiation,m40_10_02,radiation,1200000,155330,Unknown,org.minizinc.mip.gurobi
 k1-8c-8s-v1,ship-schedule,5Ships,ship-schedule.cp,2070,483650,Optimal,org.chuffed.chuffed
 k1-8c-8s-v1,ship-schedule,6ShipsMixed,ship-schedule.cp,1470,301650,Optimal,org.chuffed.chuffed
 k1-8c-8s-v1,ship-schedule,7ShipsMixed,ship-schedule.cp,1697,407850,Optimal,org.chuffed.chuffed
@@ -94,8 +94,8 @@ k1-8c-8s-v1,train,instance.2,train,227514,71820,Optimal,org.minizinc.mip.gurobi
 k1-8c-8s-v1,train,instance.3,train,449906,72330,Optimal,org.minizinc.mip.gurobi
 k1-8c-8s-v1,train,instance.6,train,8898,28290,Optimal,org.minizinc.mip.gurobi
 k1-8c-8s-v1,train,instance.7,train,223513,71920,Optimal,org.minizinc.mip.gurobi
-k1-8c-8s-v1,vrp,A-n38-k5.vrp,vrp,1200102,731,Unknown,cp-sat
-k1-8c-8s-v1,vrp,A-n62-k8.vrp,vrp,1200106,1333,Unknown,cp-sat
-k1-8c-8s-v1,vrp,B-n51-k7.vrp,vrp,1200083,1017,Unknown,org.minizinc.mip.gurobi
-k1-8c-8s-v1,vrp,P-n20-k2.vrp,vrp,1200060,216,Unknown,org.minizinc.mip.gurobi
-k1-8c-8s-v1,vrp,P-n60-k15.vrp,vrp,1200132,994,Unknown,org.minizinc.mip.gurobi
+k1-8c-8s-v1,vrp,A-n38-k5.vrp,vrp,1200000,731,Unknown,cp-sat
+k1-8c-8s-v1,vrp,A-n62-k8.vrp,vrp,1200000,1333,Unknown,cp-sat
+k1-8c-8s-v1,vrp,B-n51-k7.vrp,vrp,1200000,1017,Unknown,org.minizinc.mip.gurobi
+k1-8c-8s-v1,vrp,P-n20-k2.vrp,vrp,1200000,216,Unknown,org.minizinc.mip.gurobi
+k1-8c-8s-v1,vrp,P-n60-k15.vrp,vrp,1200000,994,Unknown,org.minizinc.mip.gurobi

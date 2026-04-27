@@ -1,0 +1,17 @@
+Training data construction
+
+The training data is built from three solver portfolios (cpsat8, k1-8c-8s-v1, ek1-8c-8s-v2) run on every benchmark instance from the MiniZinc Challenge archive between 2011 and 2025. The years 2008–2010 are excluded because no portfolio results are available for them. Each portfolio is run once per (year, problem, instance) under a 20-minute wall-clock cap.
+
+We treat the same instance recurring in different challenge years as distinct training examples rather than averaging across years, because the MiniZinc compiler version and often the problem variant change from year to year, so the runs are not comparable.
+
+Some instances are excluded automatically. A small number of models do not compile under the current MiniZinc version (notably yumi-dynamic in 2021), so no features can be extracted; these instances are dropped at the join between feature vectors and benchmark results. A few additional instances were skipped during data discovery in 2022, 2024 and 2025 and likewise drop out of the join. After this filtering, 1471 instances remain, each with a 95-dimensional feature vector and three portfolio results.
+
+Wall-clock measurements above the 20-minute cap are clamped to the cap. Most overages are sub-second subprocess overhead, but a small number of runs are inflated by solver cleanup behaviour after the timeout has fired (some solvers do not respond promptly to termination signals). In all such cases, inspection of the solver output confirms that productive solving stopped well before the cap; the unbounded portion is post-timeout cleanup and not informative as a runtime signal.
+
+The training target is the per-instance Borda score in the style of the MiniZinc Challenge: each pair of portfolios on each instance produces a score of one for the winner, zero for the loser, and a half each on a tie. Satisfaction problems are ranked by whether a solution was found and then by time; optimisation problems are ranked by whether the instance was solved, by whether optimality was proved, by objective quality, and finally by time. With P portfolios the per-portfolio score on each instance lies in [0, P−1]. Instances on which no portfolio finds a solution contribute zero to all portfolios, which we keep as a meaningful signal rather than discarding.
+
+The Borda tournament is restricted to the portfolios in each dataset rather than computed against the full set of MiniZinc Challenge solvers. The challenge's open-category results are only available for 2023–2025; restricting the tournament keeps the full 15-year range usable.
+
+To allow training models for different deployment contexts, three datasets are produced: one comparing cpsat8 against k1-8c-8s-v1, one comparing cpsat8 against ek1-8c-8s-v2, and one comparing all three. Each dataset stores the feature matrix, Borda target, raw runtime, status, objective, and metadata identifying the year, problem, model and instance. Features are stored unnormalised; normalisation is left to the training pipeline. Splitting by year is supported via the metadata for temporal generalisation experiments.
+
+Two known data-quality issues are not filtered. Three instances exhibit conflicting optimal objectives between portfolios, indicating at least one solver is incorrect on those instances; these are kept because they are rare and the chosen Borda definition handles them gracefully. Timeouts are also kept; they correctly contribute zero to the Borda score for that portfolio.
