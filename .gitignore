@@ -212,7 +212,8 @@ __marimo__/
 dumb_experiments/
 
 
-*.out
+*.out*
+*.zip
 
 
 benchmarks/open-category-benchmarks/tmp-solvers/*

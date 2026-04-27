@@ -1,5 +1,4 @@
 problem,model,type
-ATSP,atsp,MIN
 EchoSched,JSP0,MIN
 accap,accap,MIN
 aircraft-disassembly,aircraft,MIN
@@ -37,6 +36,7 @@ bnn-planner,sysadmin_4_2s,MIN
 bnn-planner,sysadmin_5_4s,MIN
 cable-tree-wiring,ctw,MIN
 cable_tree_wiring,ctw,MIN
+cargo,cargo_coarsePiles (5),MIN
 cargo,cargo_coarsePiles,MIN
 carpet-cutting,cc_base,MIN
 celar,celar,MIN
@@ -45,6 +45,7 @@ chessboard,chessboard,MAX
 city-position,city-position,MIN
 code-generator,unison,MIN
 collaborative-construction,macc,MIN
+community-detection,community-detection (2),MAX
 community-detection,community-detection,MAX
 compression,compression,MIN
 concert-hall-cap,concert-hall-cap,MAX
@@ -54,15 +55,15 @@ connect,connect__0061,MIN
 connect,connect__0083_02,MIN
 connect,connect__0086_02,MIN
 costas-array,CostasArray,SAT
-costas_array,CostasArray,SAT
 crosswords,crossword_opt,MAX
 cryptanalysis,step1_aes,SAT
 cvrp,cvrp,MIN
 cyclic-rcpsp,rcmsp,MIN
 debruijn_binary,debruijn_binary,SAT
 depot-placement,depot_placement,MIN
-depot_placement,depot_placement,MIN
 diameterc-mst,dcmst,MIN
+elitserien,handball (5),MIN
+elitserien,handball (6),MIN
 elitserien,handball,MIN
 evm-super-compilation,evmopt-generic,MIN
 fast-food,fastfood,MIN
@@ -110,7 +111,8 @@ jp-encoding,jp-encoding,MIN
 kidney-exchange,ccmcp,MAX
 l2p,linear-to-program,MIN
 largescheduling,largecumulative,MIN
-league,league,MIN
+league,league 1d,MIN
+league,league_2d,MIN
 liner-sf-repositioning,fm3_0,MIN
 liner-sf-repositioning,fm3_11,MIN
 liner-sf-repositioning,fm3_3,MIN
@@ -146,21 +148,16 @@ nside,full,MAX
 on-call-rostering,oc-roster,MIN
 oocsp_racks,oocsp_racks,SAT
 opd,opd,MIN
-open-stacks,open_stacks_01,MIN
 open_stacks,open_stacks_01,MIN
 openshop,openshop,MIN
 opt-cryptanalysis,mznc2017_aes_opt,MIN
 opt-cryptoanalysis,mznc2017_aes_opt,MIN
 p1f,p1f,MIN
-p1f-pjs,p1f-pjs,MIN
 parity-learning,parity-learning,MIN
 pattern-set-mining,pattern_set_mining,MAX
-pattern-set-mining-k1,pattern_set_mining_k1,MAX
-pattern-set-mining-k2,pattern_set_mining_k2,MAX
 peacable_queens,peaceable_queens_mznc2021,MAX
 pennies-opt,pennies,MAX
 pentominoes,pentominoes-int,SAT
-pentominoes-int,pentominoes-int,SAT
 pentominoes-zayenz,pentominoes,SAT
 perfect_square,perfect_square,SAT
 physician-scheduling,physician-scheduling,MIN
@@ -193,6 +190,7 @@ rectangle-packing,rect_packing,SAT
 rel2onto,rel2onto,MIN
 road-cons,road_naive,MIN
 roster,roster_model,MIN
+roster,roster_model_long,MIN
 roster-shifts-bool,bool-model,MAX
 roster-sickness,bool-model-sickness,MAX
 rotating-workforce,rotating-workforce,SAT
@@ -280,9 +278,10 @@ wwtp_random,wwtpp,SAT
 wwtp_real,wwtpp,SAT
 wwtpp-real,wwtpp,SAT
 yumi-dynamic,yumi-dynamic,MIN
+yumi-static,yumi-static (2),MIN
 yumi-static,yumi-static,MIN
-zephyrus,zephyrus,MIN
 zephyrus,zephyrus-FH-2-15,MIN
+zephyrus,zephyrus,MIN
 zephyrus,zephyrus_15_10,MIN
 zephyrus,zephyrus_20_20,MIN
 zephyrus,zephyrus_5_20,MIN
