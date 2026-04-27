@@ -34,7 +34,6 @@ from collections import defaultdict
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-DATA_ROOT = ROOT / "k1-8c-8s-v1"
 TYPES_CSV = ROOT.parent / "open-category-benchmarks" / "problem_types.csv"
 
 TIMEOUT_MS = 1_200_000
@@ -242,19 +241,25 @@ def print_summary(label: str, issues: dict[str, list[str]], verbose: bool, inden
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("data_dir", help="directory under fine-tunning/ to scan (e.g. k1-8c-8s-v1)")
     ap.add_argument("--verbose", "-v", action="store_true",
                     help="show offending rows under each issue")
     ap.add_argument("--filter", "-f", default=None,
                     help="only scan experiments whose name contains this substring")
     args = ap.parse_args()
 
+    data_root = ROOT / args.data_dir
+    if not data_root.exists():
+        print(f"ERROR: {data_root} does not exist", file=sys.stderr)
+        sys.exit(1)
+
     problem_types = load_problem_types()
     if not problem_types:
         print(f"WARNING: no problem types loaded from {TYPES_CSV}", file=sys.stderr)
 
-    experiments = discover_configs(DATA_ROOT)
+    experiments = discover_configs(data_root)
     if not experiments:
-        print(f"No results.csv files found under {DATA_ROOT}", file=sys.stderr)
+        print(f"No results.csv files found under {data_root}", file=sys.stderr)
         sys.exit(1)
 
     grand_totals: dict[str, int] = defaultdict(int)
@@ -263,7 +268,7 @@ def main():
         if args.filter and args.filter not in exp_dir.name:
             continue
         configs = experiments[exp_dir]
-        rel = exp_dir.relative_to(DATA_ROOT)
+        rel = exp_dir.relative_to(data_root)
         print(f"\n═══ {rel} ═══")
         for c in sorted(configs):
             issues = check_config(c, problem_types, args.verbose)

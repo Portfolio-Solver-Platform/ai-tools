@@ -24,9 +24,9 @@ EXCLUDED_SOLVERS = {
     # "org.minizinc.mip.highs",
     # "izplus",
     # "org.choco.choco",
-    "org.chuffed.chuffed",
-    "org.gecode.gecode",
-    "solutions.huub",
+    # "org.chuffed.chuffed",
+    # "org.gecode.gecode",
+    # "solutions.huub",
 }
 
 MAX_SOLVERS_PER_PORTFOLIO = 8
@@ -49,10 +49,18 @@ def combinations_summing_to(items, target, key=lambda x: x):
 
 
 def prune_configs(scores, configs):
-    best_per_instance = scores.argmax(axis=0)
-    best_solvers = {configs[i][0] for i in best_per_instance}
-    removed = {c[0] for c in configs} - best_solvers
-    pruned = [c for c in configs if c[0] in best_solvers]
+    n = len(configs)
+    dominated = [False] * n
+    for i in range(n):
+        for j in range(n):
+            if i == j:
+                continue
+            # j dominates i: at least as good everywhere and uses no more cores
+            if configs[j][1] <= configs[i][1] and np.all(scores[j] >= scores[i]):
+                dominated[i] = True
+                break
+    pruned = [c for c, d in zip(configs, dominated) if not d]
+    removed = {c[0] for c, d in zip(configs, dominated) if d} - {c[0] for c in pruned}
     print(f"Configs: {len(configs)} → {len(pruned)} (removed solvers: {removed or 'none'})")
     return pruned
 

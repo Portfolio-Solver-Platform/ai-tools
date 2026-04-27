@@ -12,6 +12,7 @@ is copied to results.csv.bak before being overwritten.
 Fails loudly if any model in the data is missing from problem_types.csv.
 """
 
+import argparse
 import csv
 import shutil
 import sys
@@ -19,7 +20,6 @@ from collections import defaultdict
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-DATA_ROOT = ROOT / "k1-8c-8s-v1"
 TYPES_CSV = ROOT.parent / "open-category-benchmarks" / "problem_types.csv"
 
 TIMEOUT_MS = 1_200_000
@@ -63,14 +63,23 @@ def fix_csv(csv_path: Path, problem_types: dict[str, str]) -> tuple[int, int, se
 
 
 def main():
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("data_dir", help="directory under fine-tunning/ to fix (e.g. k1-8c-8s-v1)")
+    args = ap.parse_args()
+
+    data_root = ROOT / args.data_dir
+    if not data_root.exists():
+        print(f"ERROR: {data_root} does not exist", file=sys.stderr)
+        sys.exit(1)
+
     problem_types = load_problem_types()
     if not problem_types:
         print(f"ERROR: no problem types loaded from {TYPES_CSV}", file=sys.stderr)
         sys.exit(1)
 
-    csv_paths = sorted(DATA_ROOT.rglob("results.csv"))
+    csv_paths = sorted(data_root.rglob("results.csv"))
     if not csv_paths:
-        print(f"No results.csv files found under {DATA_ROOT}", file=sys.stderr)
+        print(f"No results.csv files found under {data_root}", file=sys.stderr)
         sys.exit(1)
 
     all_missing: set[str] = set()
@@ -85,7 +94,7 @@ def main():
     print("-" * 88)
     total_rows = total_fixed = 0
     for csv_path, rows, fixed in per_config:
-        rel = csv_path.relative_to(DATA_ROOT).parent
+        rel = csv_path.relative_to(data_root).parent
         marker = "  ←" if fixed else ""
         print(f"{str(rel):<70s}  {rows:>6d}  {fixed:>6d}{marker}")
         total_rows += rows
