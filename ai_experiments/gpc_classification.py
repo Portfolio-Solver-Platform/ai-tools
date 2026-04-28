@@ -3,12 +3,10 @@ import sys
 
 import numpy as np
 from sklearn.model_selection import cross_val_predict, GroupShuffleSplit, GroupKFold
-from sklearn.preprocessing import PowerTransformer, StandardScaler
-from sklearn.gaussian_process import GaussianProcessClassifier
-# from sklearn.model_selection import KFold, LeaveOneOut, train_test_split
-from sklearn.gaussian_process.kernels import RBF
+from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import Pipeline
-from sklearn import svm
+from sklearn.gaussian_process import GaussianProcessClassifier
+from sklearn.gaussian_process.kernels import RBF, ConstantKernel
 import optuna
 import joblib
 
@@ -31,10 +29,10 @@ print(f"shared test baselines (always solver i): {np.sum(Y_test_borda_3solver, a
 print(f"shared test oracle (best solver per row): {np.sum(np.max(Y_test_borda_3solver, axis=1))}")
 print(f"train problems: {len(np.unique(groups_canon[train_idx]))}, test problems: {len(np.unique(groups_canon[test_idx]))}")
 
+# 3-class skipped: prior threshold sweep showed no exploitable signal on k1_ek1
 datasets = [
-    ('cpsat8_k1_ek1', get_cpsat8_k1_ek1_data),
-    ('cpsat8_k1',     get_cpsat8_k1_data),
-    ('cpsat8_ek1',    get_cpsat8_ek1_data),
+    ('cpsat8_k1',  get_cpsat8_k1_data),
+    ('cpsat8_ek1', get_cpsat8_ek1_data),
 ]
 
 results = {}
@@ -55,19 +53,23 @@ for name, getter in datasets:
     print(f"train oracle (best solver per row): {np.sum(np.max(Y_train_borda, axis=1))}")
 
     def objective(trial):
-        gamma = trial.suggest_float("gamma", 1e-3, 1e1, log=True)
-        c_value = trial.suggest_float("C", 0.1, 100, log=True)
+        length_scale_init = trial.suggest_float("length_scale_init", 1e-2, 1e2, log=True)
+        n_restarts = trial.suggest_int("n_restarts_optimizer", 0, 3)
         threshold = trial.suggest_float("threshold", 0.34, 0.99)
 
-        svc_args = {'kernel': 'rbf', 'C': c_value, 'gamma': gamma, 'class_weight': 'balanced', 'probability': True}
-
-        svm_pipeline = Pipeline([
+        kernel = ConstantKernel(1.0) * RBF(length_scale=length_scale_init)
+        gpc_pipeline = Pipeline([
             ('scaler', StandardScaler()),
-            ('model', svm.SVC(**svc_args))
+            ('model', GaussianProcessClassifier(
+                kernel=kernel,
+                n_restarts_optimizer=n_restarts,
+                random_state=42,
+                n_jobs=1,
+            ))
         ])
 
         cv = GroupKFold(n_splits=len(np.unique(train_groups)) // 5)
-        proba = cross_val_predict(svm_pipeline, X_train, y_train, method="predict_proba", cv=cv, groups=train_groups, n_jobs=28, verbose=1)
+        proba = cross_val_predict(gpc_pipeline, X_train, y_train, method="predict_proba", cv=cv, groups=train_groups, n_jobs=28, verbose=1)
 
         predicted_solvers = np.argmax(proba, axis=1)
         predicted_solvers[proba.max(axis=1) < threshold] = 0  # cpsat8 fallback
@@ -77,7 +79,7 @@ for name, getter in datasets:
         return np.sum(bordas)
 
     study = optuna.create_study(direction="maximize")
-    study.optimize(objective, n_trials=60)
+    study.optimize(objective, n_trials=10)
 
     print(f"best train total borda: {study.best_value}")
     print("Best Hyperparameters:")
@@ -86,11 +88,18 @@ for name, getter in datasets:
 
     best_params = dict(study.best_params)
     best_threshold = best_params.pop('threshold')
-    best_svc_args = {'kernel': 'rbf', 'class_weight': 'balanced', 'probability': True, **best_params}
+    best_length_scale = best_params.pop('length_scale_init')
+    best_n_restarts = best_params.pop('n_restarts_optimizer')
 
+    best_kernel = ConstantKernel(1.0) * RBF(length_scale=best_length_scale)
     test_pipeline = Pipeline([
         ('scaler', StandardScaler()),
-        ('model', svm.SVC(**best_svc_args))
+        ('model', GaussianProcessClassifier(
+            kernel=best_kernel,
+            n_restarts_optimizer=best_n_restarts,
+            random_state=42,
+            n_jobs=28,
+        ))
     ])
     test_pipeline.fit(X_train, y_train)
     test_proba = test_pipeline.predict_proba(X_test)
@@ -104,15 +113,22 @@ for name, getter in datasets:
         'train_borda': study.best_value,
         'test_borda_shared': test_borda,
         'threshold': best_threshold,
-        'best_params': best_params,
+        'length_scale_init': best_length_scale,
+        'n_restarts_optimizer': best_n_restarts,
     }
 
+    final_kernel = ConstantKernel(1.0) * RBF(length_scale=best_length_scale)
     final_pipe = Pipeline([
         ('scaler', StandardScaler()),
-        ('model', svm.SVC(**best_svc_args))
+        ('model', GaussianProcessClassifier(
+            kernel=final_kernel,
+            n_restarts_optimizer=best_n_restarts,
+            random_state=42,
+            n_jobs=28,
+        ))
     ])
     final_pipe.fit(X, y_labels)
-    joblib.dump({'model': final_pipe, 'threshold': best_threshold}, f'models/svm_model_{name}.joblib')
+    joblib.dump({'model': final_pipe, 'threshold': best_threshold}, f'models/gpc_model_{name}.joblib')
 
 print("\n========== Summary (test Borda on shared 3-solver test set) ==========")
 oracle = np.sum(np.max(Y_test_borda_3solver, axis=1))

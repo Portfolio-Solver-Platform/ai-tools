@@ -40,7 +40,7 @@ def get_mznc_data():
 def _load_xy(filename):
     path = Path(__file__).resolve().parent.parent / "data" / filename
     data = np.load(path, allow_pickle=True)
-    return data["X"], data["Y"]
+    return data["X"], data["Y"], data["meta"]
 
 
 def get_cpsat8_ek1_data():
@@ -56,9 +56,5 @@ def get_cpsat8_k1_ek1_data():
 
 
 def prepare_labels(Y):
-    max_real_time = np.nanmax(Y)
-    timeout_penalty = max_real_time * 2
-    Y_filled = np.nan_to_num(Y, nan=timeout_penalty)
-    y_labels = np.argmin(Y_filled, axis=1)
-    Y_eval = np.nan_to_num(Y, nan=max_real_time)
-    return y_labels, Y_eval
+    y_labels = np.argmax(Y, axis=1)
+    return y_labels, Y
