@@ -37,6 +37,24 @@ def get_mznc_data():
     return convert(benchmark, instances)
 
 
+def _load_xy(filename):
+    path = Path(__file__).resolve().parent.parent / "data" / filename
+    data = np.load(path, allow_pickle=True)
+    return data["X"], data["Y"]
+
+
+def get_cpsat8_ek1_data():
+    return _load_xy("portfolios_cpsat8_ek1_training_data.npz")
+
+
+def get_cpsat8_k1_data():
+    return _load_xy("portfolios_cpsat8_k1_training_data.npz")
+
+
+def get_cpsat8_k1_ek1_data():
+    return _load_xy("portfolios_cpsat8_k1_ek1_training_data.npz")
+
+
 def prepare_labels(Y):
     max_real_time = np.nanmax(Y)
     timeout_penalty = max_real_time * 2
