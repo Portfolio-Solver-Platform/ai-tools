@@ -84,8 +84,8 @@ def pairwise_score(s: dict, s2: dict, kind: str,
     if kind == 'SAT':
         if not is_solved(s2, kind):
             return 1.0
-        t_s = get_time(s)
-        t_s2 = get_time(s2)
+        t_s = int(get_time(s)) // 1000
+        t_s2 = int(get_time(s2)) // 1000
         if t_s + t_s2 == 0:
             return 0.5
         return t_s2 / (t_s + t_s2)

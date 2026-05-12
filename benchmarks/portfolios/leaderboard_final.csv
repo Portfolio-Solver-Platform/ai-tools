@@ -1,0 +1,4 @@
+name,eligible,borda_total,borda_2023,borda_2024,borda_2025,max_possible,normalized,n_instances,coverage,constituent_solvers
+k1-8c-8s-v1,False,3496.08,1162.48,1140.77,1192.84,4500.0,0.7769,300,2023:100/2024:100/2025:95,"cp-sat@1c,org.chuffed.chuffed@1c,org.gecode.gecode@2c,org.minizinc.mip.gurobi@2c,org.picat-lang.picat@1c,yuck@1c"
+ek1-8c-8s-v2,True,3482.37,1181.43,1150.61,1150.33,4500.0,0.7739,300,2023:100/2024:100/2025:95,"cp-sat@1c,dexter@1c,nl.tudelft.algorithmics.pumpkin@1c,org.choco.choco@1c,org.minizinc.mip.gurobi@2c,org.picat-lang.picat@1c,yuck@1c"
+cpsat8,True,3418.21,1182.55,1063.05,1172.6,4500.0,0.7596,300,2023:100/2024:100/2025:95,cp-sat@8c

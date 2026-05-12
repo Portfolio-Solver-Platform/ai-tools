@@ -32,10 +32,15 @@ def load_problem_types(path):
 
 
 def _split_by_time(time_a, time_b):
-    total = time_a + time_b
+    # MZ Challenge 2026: timeUsed is quantized to whole seconds, rounded
+    # towards zero, before the time-split tie-break. Sub-second runs both
+    # quantize to 0, which lands on a 0.5/0.5 tie.
+    a = int(time_a) // 1000
+    b = int(time_b) // 1000
+    total = a + b
     if total == 0:
         return 0.5, 0.5
-    return time_b / total, time_a / total
+    return b / total, a / total
 
 
 def _compare(status_a, time_a, obj_a, status_b, time_b, obj_b, kind):

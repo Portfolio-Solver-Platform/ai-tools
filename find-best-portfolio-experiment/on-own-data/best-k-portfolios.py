@@ -123,27 +123,61 @@ def prune_portfolios(portfolios, baseline=None):
 
 
 def best_k_portfolios(portfolios, k=1, top_n=30, heap_size=500, baseline=None):
-    score_vecs = np.array([p[0] for p in portfolios])
-    n = len(portfolios)
-    heap = []
-    combos = combinations(range(n), k)
+    """Find the top-N k-combinations of portfolios by oracle score.
 
-    def score_combo(combo):
-        s = score_vecs[list(combo)].max(axis=0)
-        if baseline is not None:
-            s = np.maximum(s, baseline)
-        return s.sum()
-
-    for combo in itertools.islice(combos, heap_size):
-        heapq.heappush(heap, (score_combo(combo), combo))
-
+    Vectorised over the innermost index: the k-1 outer indices iterate in
+    Python, but for each prefix the score against every remaining candidate
+    is computed in one numpy max+sum, then a vectorised mask filters to
+    candidates that beat the current heap floor before pushing.
+    """
+    score_vecs = np.array([p[0] for p in portfolios], dtype=np.float64)
+    n, m = score_vecs.shape
+    base_vec = (baseline if baseline is not None
+                else np.full(m, -np.inf, dtype=np.float64))
     total = math.comb(n, k)
-    for count, combo in enumerate(combos, heap_size + 1):
-        score = score_combo(combo)
-        if score > heap[0][0]:
-            heapq.heapreplace(heap, (score, combo))
-        if count % 100_000 == 0:
-            print(f"\r  {count}/{total} ({100*count/total:.1f}%)", end="", flush=True)
+
+    heap = []  # min-heap of (score, combo_tuple); never grows past heap_size
+    progress = {"count": 0}
+    leaves_per_dot = max(1, total // 1000)
+
+    def push_batch(scores_arr, prefix_idxs, start):
+        """Push leaves indices [start, start+len(scores_arr)) into the heap."""
+        leaves = len(scores_arr)
+        progress["count"] += leaves
+        floor = heap[0][0] if len(heap) >= heap_size else -np.inf
+        winners = np.flatnonzero(scores_arr > floor)
+        for off in winners:
+            entry = (float(scores_arr[off]), prefix_idxs + (start + int(off),))
+            if len(heap) < heap_size:
+                heapq.heappush(heap, entry)
+            elif entry[0] > heap[0][0]:
+                heapq.heapreplace(heap, entry)
+        if progress["count"] // leaves_per_dot != (progress["count"] - leaves) // leaves_per_dot:
+            print(f"\r  {progress['count']}/{total} "
+                  f"({100*progress['count']/total:.1f}%)",
+                  end="", flush=True)
+
+    def recurse(prefix_idxs, prefix_max, start):
+        depth = len(prefix_idxs)
+        remaining = k - depth
+        if remaining == 0:
+            # Leaf with no remaining selections — only happens if k == 0.
+            return
+        if remaining == 1:
+            if start >= n:
+                return
+            # max(prefix_max, score_vecs[i]) for every i >= start
+            inner = np.maximum(prefix_max, score_vecs[start:])
+            scores = inner.sum(axis=1)
+            push_batch(scores, prefix_idxs, start)
+        else:
+            # Iterate the next index in Python; recurse into the rest.
+            limit = n - remaining + 1
+            for i in range(start, limit):
+                new_max = np.maximum(prefix_max, score_vecs[i])
+                recurse(prefix_idxs + (i,), new_max, i + 1)
+
+    recurse((), base_vec, 0)
     print()
 
     # Tiebreaker: prefer combos where the weakest portfolio is strongest

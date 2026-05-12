@@ -3,7 +3,7 @@
 #set page(width: auto, height: auto, margin: 1em)
 
 #let labels = ("none", "2s", "4s", "8s", "16s", "32s", "64s", "96s", "128s", "160s", "192s", "224s", "256s")
-#let scores = (649.30, 599.83, 622.00, 648.45, 548.68, 569.68, 623.83, 571.24, 572.54, 642.35, 577.25, 567.09, 607.78)
+#let scores = (653.19, 603.76, 625.51, 651.95, 535.15, 569.20, 623.84, 570.73, 571.81, 645.73, 576.49, 566.24, 606.39)
 
 #lq.diagram(
   width: 14cm,
@@ -11,7 +11,7 @@
   title: [Borda Score by Bound-Sharing Interval (k1-8c-8s-v1)],
   ylabel: [Borda score],
   xlabel: [Bound-sharing interval],
-  ylim: (528.6, 669.4),
+  ylim: (511.5, 676.8),
   xaxis: (
     ticks: labels.enumerate(),
     subticks: none,
