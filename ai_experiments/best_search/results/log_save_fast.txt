@@ -1,0 +1,5 @@
+loaded 30 per-fold best_params for BagSVM-MW/log_std
+median/mode params: {'gamma': 0.016700300659070376, 'wpow': 0.7835958041461719, 'C': 8.30298747010578, 'max_samples': 0.8572427586182719}
+fitting bagged ensemble: n_estimators=30, pre=log_std
+saved /home/sofus/speciale/ai/ai-tools/ai_experiments/best_search/models/deliverable_BagSVM_MW_log_std.joblib  (wall=4s)
+training-set sanity: borda=902.01 / oracle=966.61  acc=83.3%  (not a generalisation score)

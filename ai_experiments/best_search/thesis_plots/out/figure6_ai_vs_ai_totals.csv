@@ -1,0 +1,7 @@
+method,borda,ratio
+always_cpsat,1638.11,0.845
+always_k1,1322.94,0.683
+always_ek1,1123.95,0.580
+ai_k1,1721.75,0.889
+ai_ek1,1681.18,0.868
+oracle,1937.48,1.000

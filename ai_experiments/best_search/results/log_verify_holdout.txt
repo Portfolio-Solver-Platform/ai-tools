@@ -1,0 +1,90 @@
+
+========== cpsat8_k1  (1379 instances, 26.5% positives) ==========
+  FIXED params (no HPO): {'C': 8.3, 'gamma': 0.0167, 'wpow': 0.78, 'max_samples': 0.86}
+  seed=0:
+    always_cpsat       borda=157.40  oracle=194.17  ratio=0.811  acc= 73.6%
+    always_k1          borda=116.60  oracle=194.17  ratio=0.600  acc= 26.4%
+    random             borda=129.88  oracle=194.17  ratio=0.669  acc= 43.1%
+    logreg_default     borda=165.68  oracle=194.17  ratio=0.853  acc= 76.4%
+    svm_rbf_default    borda=168.05  oracle=194.17  ratio=0.865  acc= 79.0%
+    bag_svm_mw_fixed   borda=179.88  oracle=194.17  ratio=0.926  acc= 83.7%
+  seed=1:
+    always_cpsat       borda=159.79  oracle=189.99  ratio=0.841  acc= 73.6%
+    always_k1          borda=115.21  oracle=189.99  ratio=0.606  acc= 26.4%
+    random             borda=137.99  oracle=189.99  ratio=0.726  acc= 53.3%
+    logreg_default     borda=167.27  oracle=189.99  ratio=0.880  acc= 76.8%
+    svm_rbf_default    borda=166.46  oracle=189.99  ratio=0.876  acc= 78.3%
+    bag_svm_mw_fixed   borda=170.98  oracle=189.99  ratio=0.900  acc= 80.4%
+  seed=2:
+    always_cpsat       borda=159.45  oracle=186.38  ratio=0.856  acc= 73.6%
+    always_k1          borda=111.55  oracle=186.38  ratio=0.599  acc= 26.4%
+    random             borda=129.30  oracle=186.38  ratio=0.694  acc= 45.7%
+    logreg_default     borda=162.84  oracle=186.38  ratio=0.874  acc= 73.6%
+    svm_rbf_default    borda=166.39  oracle=186.38  ratio=0.893  acc= 75.0%
+    bag_svm_mw_fixed   borda=169.00  oracle=186.38  ratio=0.907  acc= 76.1%
+  seed=3:
+    always_cpsat       borda=160.65  oracle=195.93  ratio=0.820  acc= 73.6%
+    always_k1          borda=114.35  oracle=195.93  ratio=0.584  acc= 26.4%
+    random             borda=129.29  oracle=195.93  ratio=0.660  acc= 47.1%
+    logreg_default     borda=160.62  oracle=195.93  ratio=0.820  acc= 71.4%
+    svm_rbf_default    borda=163.91  oracle=195.93  ratio=0.837  acc= 72.8%
+    bag_svm_mw_fixed   borda=172.90  oracle=195.93  ratio=0.882  acc= 76.4%
+  seed=4:
+    always_cpsat       borda=156.40  oracle=191.84  ratio=0.815  acc= 73.6%
+    always_k1          borda=114.60  oracle=191.84  ratio=0.597  acc= 26.4%
+    random             borda=129.44  oracle=191.84  ratio=0.675  acc= 44.2%
+    logreg_default     borda=158.15  oracle=191.84  ratio=0.824  acc= 72.5%
+    svm_rbf_default    borda=164.36  oracle=191.84  ratio=0.857  acc= 76.1%
+    bag_svm_mw_fixed   borda=169.64  oracle=191.84  ratio=0.884  acc= 77.2%
+  ----- averaged over 5 seeds -----
+    always_cpsat       borda=158.74±1.58  ratio=0.828±0.017  acc= 73.6±0.0%  (n_test=276)
+    always_k1          borda=114.46±1.65  ratio=0.597±0.008  acc= 26.4±0.0%  (n_test=276)
+    random             borda=131.18±3.41  ratio=0.685±0.024  acc= 46.7±3.6%  (n_test=276)
+    logreg_default     borda=162.91±3.30  ratio=0.850±0.025  acc= 74.1±2.2%  (n_test=276)
+    svm_rbf_default    borda=165.84±1.52  ratio=0.866±0.019  acc= 76.2±2.2%  (n_test=276)
+    bag_svm_mw_fixed   borda=172.48±3.94  ratio=0.900±0.016  acc= 78.8±2.9%  (n_test=276)
+
+========== cpsat8_ek1  (1379 instances, 19.8% positives) ==========
+  FIXED params (no HPO): {'C': 8.3, 'gamma': 0.0167, 'wpow': 0.78, 'max_samples': 0.86}
+  seed=0:
+    always_cpsat       borda=168.33  oracle=195.46  ratio=0.861  acc= 80.1%
+    always_k1          borda=103.67  oracle=195.46  ratio=0.530  acc= 19.9%
+    random             borda=133.31  oracle=195.46  ratio=0.682  acc= 48.9%
+    logreg_default     borda=170.31  oracle=195.46  ratio=0.871  acc= 79.3%
+    svm_rbf_default    borda=168.46  oracle=195.46  ratio=0.862  acc= 80.1%
+    bag_svm_mw_fixed   borda=183.65  oracle=195.46  ratio=0.940  acc= 84.4%
+  seed=1:
+    always_cpsat       borda=168.93  oracle=194.63  ratio=0.868  acc= 80.1%
+    always_k1          borda=104.07  oracle=194.63  ratio=0.535  acc= 19.9%
+    random             borda=136.97  oracle=194.63  ratio=0.704  acc= 51.1%
+    logreg_default     borda=171.61  oracle=194.63  ratio=0.882  acc= 79.7%
+    svm_rbf_default    borda=170.92  oracle=194.63  ratio=0.878  acc= 81.2%
+    bag_svm_mw_fixed   borda=176.96  oracle=194.63  ratio=0.909  acc= 81.2%
+  seed=2:
+    always_cpsat       borda=168.94  oracle=195.60  ratio=0.864  acc= 80.1%
+    always_k1          borda=102.06  oracle=195.60  ratio=0.522  acc= 19.9%
+    random             borda=143.27  oracle=195.60  ratio=0.733  acc= 51.4%
+    logreg_default     borda=169.22  oracle=195.60  ratio=0.865  acc= 81.2%
+    svm_rbf_default    borda=169.46  oracle=195.60  ratio=0.866  acc= 80.4%
+    bag_svm_mw_fixed   borda=177.46  oracle=195.60  ratio=0.907  acc= 81.2%
+  seed=3:
+    always_cpsat       borda=171.42  oracle=199.14  ratio=0.861  acc= 80.1%
+    always_k1          borda=101.58  oracle=199.14  ratio=0.510  acc= 19.9%
+    random             borda=135.95  oracle=199.14  ratio=0.683  acc= 49.3%
+    logreg_default     borda=167.71  oracle=199.14  ratio=0.842  acc= 77.5%
+    svm_rbf_default    borda=174.20  oracle=199.14  ratio=0.875  acc= 81.5%
+    bag_svm_mw_fixed   borda=179.54  oracle=199.14  ratio=0.902  acc= 78.6%
+  seed=4:
+    always_cpsat       borda=164.30  oracle=194.95  ratio=0.843  acc= 80.1%
+    always_k1          borda=106.70  oracle=194.95  ratio=0.547  acc= 19.9%
+    random             borda=133.83  oracle=194.95  ratio=0.686  acc= 49.3%
+    logreg_default     borda=169.58  oracle=194.95  ratio=0.870  acc= 81.5%
+    svm_rbf_default    borda=167.93  oracle=194.95  ratio=0.861  acc= 81.2%
+    bag_svm_mw_fixed   borda=174.85  oracle=194.95  ratio=0.897  acc= 80.4%
+  ----- averaged over 5 seeds -----
+    always_cpsat       borda=168.38±2.30  ratio=0.859±0.009  acc= 80.1±0.0%  (n_test=276)
+    always_k1          borda=103.62±1.80  ratio=0.529±0.012  acc= 19.9±0.0%  (n_test=276)
+    random             borda=136.67±3.57  ratio=0.697±0.019  acc= 50.0±1.1%  (n_test=276)
+    logreg_default     borda=169.69±1.28  ratio=0.866±0.013  acc= 79.9±1.4%  (n_test=276)
+    svm_rbf_default    borda=170.20±2.25  ratio=0.869±0.007  acc= 80.9±0.5%  (n_test=276)
+    bag_svm_mw_fixed   borda=178.49±2.98  ratio=0.911±0.015  acc= 81.2±1.9%  (n_test=276)

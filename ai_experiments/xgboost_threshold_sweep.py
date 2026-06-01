@@ -1,31 +1,23 @@
-"""Quick diagnostic: train xgboost on train, sweep ALL thresholds on test, see best score.
-Intentionally leaky (threshold cherry-picked on test) — only to verify the mechanism has signal.
-"""
+"""XGBoost threshold pipeline: fit on train, sweep threshold on val proba,
+refit on train+val with that threshold locked, evaluate on test. Local Borda."""
 from pathlib import Path
 import sys
 
 import numpy as np
-from sklearn.model_selection import GroupShuffleSplit
 import xgboost as xgb
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from utils.shared_data import get_cpsat8_ek1_data, get_cpsat8_k1_data, get_cpsat8_k1_ek1_data, prepare_labels
-from utils.cross_solver_eval import shared_test_borda
+from utils.cross_solver_eval import make_train_val_test_indices
 
-# Canonical group-by-problem split
-X_canon, Y_canon, meta_canon = get_cpsat8_k1_ek1_data()
-y_labels_canon, Y_borda_canon = prepare_labels(Y_canon)
-
+_, _, meta_canon = get_cpsat8_k1_ek1_data()
 groups_canon = meta_canon["problem"]
-splitter = GroupShuffleSplit(n_splits=1, test_size=0.2, random_state=42)
-train_idx, test_idx = next(splitter.split(X_canon, y_labels_canon, groups=groups_canon))
-Y_test_borda_3solver = Y_borda_canon[test_idx]
+train_idx, val_idx, test_idx = make_train_val_test_indices(groups_canon)
+trainval_idx = np.concatenate([train_idx, val_idx])
 
-baselines = np.sum(Y_test_borda_3solver, axis=0)
-oracle = np.sum(np.max(Y_test_borda_3solver, axis=1))
-print(f"shared test baselines [cpsat8, k1, ek1]: {baselines}")
-print(f"shared test oracle: {oracle:.2f}")
+print(f"split sizes: train={len(train_idx)}  val={len(val_idx)}  test={len(test_idx)}")
+print(f"problems:    train={len(np.unique(groups_canon[train_idx]))}  val={len(np.unique(groups_canon[val_idx]))}  test={len(np.unique(groups_canon[test_idx]))}")
 
 datasets = [
     ('cpsat8_k1_ek1', get_cpsat8_k1_ek1_data),
@@ -37,11 +29,12 @@ thresholds = np.arange(0.0, 1.001, 0.01)
 
 for name, getter in datasets:
     print(f"\n========== dataset: {name} ==========")
-    X, Y, _ = getter()
-    y_labels, _ = prepare_labels(Y)
-    X_train = X[train_idx]
-    y_train = y_labels[train_idx]
-    X_test = X[test_idx]
+    X, Y, meta = getter()
+    y_labels, Y_borda = prepare_labels(Y)
+    Y_val_borda = Y_borda[val_idx]
+    Y_test_borda_local = Y_borda[test_idx]
+    val_rows = np.arange(len(val_idx))
+    test_rows = np.arange(len(test_idx))
 
     model = xgb.XGBClassifier(
         n_estimators=200,
@@ -51,29 +44,43 @@ for name, getter in datasets:
         n_jobs=28,
         random_state=42,
     )
-    model.fit(X_train, y_train)
-    proba = model.predict_proba(X_test)
-    pred_argmax = np.argmax(proba, axis=1)
-    pred_max_proba = proba.max(axis=1)
-    rows = np.arange(len(Y_test_borda_3solver))
 
-    best_t, best_borda = None, -np.inf
+    model.fit(X[train_idx], y_labels[train_idx])
+    val_proba = model.predict_proba(X[val_idx])
+    val_argmax = np.argmax(val_proba, axis=1)
+    val_max_proba = val_proba.max(axis=1)
+
+    best_t, best_val_borda = None, -np.inf
+    print(f"  threshold sweep on validation set:")
     for t in thresholds:
-        pred = pred_argmax.copy()
-        pred[pred_max_proba < t] = 0  # cpsat8 fallback
-        from utils.cross_solver_eval import map_to_global
-        pred_global = map_to_global(pred, name)
-        borda = np.sum(Y_test_borda_3solver[rows, pred_global])
-        if borda > best_borda:
-            best_borda = borda
+        pred = val_argmax.copy()
+        pred[val_max_proba < t] = 0
+        borda = np.sum(Y_val_borda[val_rows, pred])
+        print(f"    t={t:.2f}  val_borda={borda:.2f}")
+        if borda > best_val_borda:
+            best_val_borda = borda
             best_t = t
 
-    pred_no_threshold = pred_argmax
-    from utils.cross_solver_eval import map_to_global
-    borda_no_threshold = np.sum(Y_test_borda_3solver[rows, map_to_global(pred_no_threshold, name)])
-    borda_always_cpsat = baselines[0]
+    val_cpsat = np.sum(Y_val_borda[:, 0])
+    print(f"  best val threshold: t={best_t:.2f}")
+    print(f"  best val Borda at that threshold:  {best_val_borda:.2f}")
+    print(f"  val always-cpsat baseline:         {val_cpsat:.2f}")
 
-    print(f"  no threshold (raw argmax):    test_borda={borda_no_threshold:.2f}")
-    print(f"  always cpsat8 baseline:       test_borda={borda_always_cpsat:.2f}")
-    print(f"  best threshold (cherry-picked on test): t={best_t:.2f}  test_borda={best_borda:.2f}")
-    print(f"  -> headroom captured: {(best_borda - borda_always_cpsat) / (oracle - borda_always_cpsat) * 100:.1f}% of (oracle - cpsat baseline)")
+    model.fit(X[trainval_idx], y_labels[trainval_idx])
+    test_proba = model.predict_proba(X[test_idx])
+    test_pred = np.argmax(test_proba, axis=1)
+    test_pred[test_proba.max(axis=1) < best_t] = 0
+    test_borda = np.sum(Y_test_borda_local[test_rows, test_pred])
+
+    test_baselines_local = np.sum(Y_test_borda_local, axis=0)
+    test_oracle_local = np.sum(np.max(Y_test_borda_local, axis=1))
+    borda_always_cpsat = test_baselines_local[0]
+    y_test_local = y_labels[test_idx]
+    test_accuracy = (test_pred == y_test_local).mean()
+    test_majority = max((y_test_local == c).mean() for c in range(Y.shape[1]))
+
+    print(f"  test baselines (local always solver i): {test_baselines_local}")
+    print(f"  test oracle (local best per row):       {test_oracle_local:.2f}")
+    print(f"  test Borda with locked threshold:       {test_borda:.2f}")
+    print(f"  test accuracy: {test_accuracy*100:.1f}%  (test majority baseline: {test_majority*100:.1f}%)")
+    print(f"  -> headroom captured on test: {(test_borda - borda_always_cpsat) / (test_oracle_local - borda_always_cpsat) * 100:.1f}% of (oracle - cpsat baseline)")

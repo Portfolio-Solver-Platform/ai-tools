@@ -1,17 +1,22 @@
 """
 Build training datasets by joining mzn-challenge feature pickles with the
-portfolio benchmarks (cpsat8, k1-8c-8s-v1, ek1-8c-8s-v2).
+median-rep portfolio benchmarks (cpsat8, k1-8c-8s-v1, ek1-8c-8s-v2).
 
-For each DATASET below we compute per-instance Borda scores (MiniZinc-
-challenge style: pairwise tournament between the listed portfolios) and save
-an .npz to data/. With P portfolios in a dataset each Borda score is in [0, P-1].
+Reads benchmarks/portfolios/final-portfolios/combined_median.csv, the
+aggregate-step output that picks one canonical rep per (portfolio, year,
+instance) via the MiniZinc Challenge Borda ordering, with OOM-tainted
+instances already removed.
+
+For each DATASET below we compute per-instance Borda scores (pairwise
+tournament between the listed portfolios) and save an .npz to data/.
+With P portfolios in a dataset each Borda score is in [0, P-1].
 
 Output (one .npz per dataset) with arrays:
   X          (N, F)    feature vectors (float64)
   Y          (N, P)    Borda score per portfolio (training target)
-  time_ms    (N, P)    raw solve time
-  status     (N, P)    "Optimal" | "Unsat" | "Unknown"
-  objective  (N, P)    objective value as float (NaN if missing)
+  time_ms    (N, P)    median rep's solve time
+  status     (N, P)    median rep's status
+  objective  (N, P)    median rep's objective as float (NaN if missing)
   meta       (N,)      structured: year:int, problem:str, model:str, name:str
   portfolios (P,)      portfolio names matching column order
 
@@ -30,7 +35,9 @@ import numpy as np
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 DATA_DIR = PROJECT_ROOT / "data"
-RESULTS_ROOT = PROJECT_ROOT / "benchmarks/portfolios/final-portfolios/portfolios-final"
+COMBINED_MEDIAN_CSV = (
+    PROJECT_ROOT / "benchmarks/portfolios/final-portfolios/combined_median.csv"
+)
 PROBLEM_TYPES_CSV = PROJECT_ROOT / "benchmarks/open-category-benchmarks/problem_types.csv"
 SCORING_DIR = PROJECT_ROOT / "benchmarks/scoring"
 sys.path.insert(0, str(SCORING_DIR))
@@ -50,53 +57,53 @@ def make_key(problem: str, model: str, name: str) -> str:
     return f"{problem}_{model}_" if model == name else f"{problem}_{model}_{name}"
 
 
-def load_results(csv_path: Path) -> dict[str, dict]:
-    """Load results.csv keyed by feature key. Adds 'status' alias for 'optimal'
-    so rows are usable with borda.pairwise_score directly."""
-    out = {}
-    with open(csv_path) as f:
+def load_median_csv(path: Path) -> dict[tuple[str, str], dict[str, dict]]:
+    """Load combined_median.csv into {(year_str, feature_key): {portfolio: row}}.
+    'row' has the keys borda.pairwise_score needs (status, objective, time_ms)
+    plus problem/model/name for metadata."""
+    out: dict[tuple[str, str], dict[str, dict]] = defaultdict(dict)
+    with open(path) as f:
         for r in csv.DictReader(f):
-            r["status"] = r["optimal"]
-            out[make_key(r["problem"], r["model"], r["name"])] = r
+            key = make_key(r["problem"], r["model"], r["name"])
+            out[(r["year"], key)][r["schedule"]] = {
+                "problem":   r["problem"],
+                "model":     r["model"],
+                "name":      r["name"],
+                "status":    r["status"],
+                "objective": r["objective"],
+                "time_ms":   r["time_ms"],
+            }
     return out
 
 
-def load_year_data(year: int, portfolios: list[str], skipped: dict) -> tuple[dict, dict] | None:
+def load_features(year: int, skipped: dict) -> dict | None:
     feat_path = DATA_DIR / f"mznc{year}_features.pkl"
     if not feat_path.exists():
         skipped["missing_year_features"].append(str(year))
         return None
     with open(feat_path, "rb") as f:
-        features = pickle.load(f)
-
-    portfolio_results = {}
-    for p in portfolios:
-        csv_path = RESULTS_ROOT / p / f"{p}-{year}" / "results.csv"
-        if not csv_path.exists():
-            skipped["missing_year_results"].append(f"{year}/{p}")
-            return None
-        portfolio_results[p] = load_results(csv_path)
-    return features, portfolio_results
+        return pickle.load(f)
 
 
-def build_dataset(stem: str, portfolios: list[str], problem_types: dict) -> None:
+def build_dataset(stem: str, portfolios: list[str], problem_types: dict,
+                  median_data: dict[tuple[str, str], dict[str, dict]]) -> None:
     print(f"\n=== {stem}  portfolios={portfolios} ===")
     Xs, Ys, times_list, statuses, objectives, metas = [], [], [], [], [], []
     skipped: dict[str, list[str]] = defaultdict(list)
     feature_dim = None
 
     for year in YEARS:
-        loaded = load_year_data(year, portfolios, skipped)
-        if loaded is None:
+        features = load_features(year, skipped)
+        if features is None:
             continue
-        features, portfolio_results = loaded
 
         for key, feat_vec in features.items():
             if feat_vec is None:
                 skipped["null_features"].append(f"{year}/{key}")
                 continue
 
-            rows = [portfolio_results[p].get(key) for p in portfolios]
+            per_portfolio = median_data.get((str(year), key), {})
+            rows = [per_portfolio.get(p) for p in portfolios]
             missing = [p for p, r in zip(portfolios, rows) if r is None]
             if missing:
                 skipped["missing_in_portfolio"].append(f"{year}/{key} (missing in {','.join(missing)})")
@@ -176,16 +183,19 @@ def build_dataset(stem: str, portfolios: list[str], problem_types: dict) -> None
 
 
 def main():
-    if not RESULTS_ROOT.is_dir():
-        print(f"missing results: {RESULTS_ROOT}", file=sys.stderr)
+    if not COMBINED_MEDIAN_CSV.exists():
+        print(f"missing median CSV: {COMBINED_MEDIAN_CSV}", file=sys.stderr)
         sys.exit(1)
     if not PROBLEM_TYPES_CSV.exists():
         print(f"missing problem types: {PROBLEM_TYPES_CSV}", file=sys.stderr)
         sys.exit(1)
 
     problem_types = load_problem_types(PROBLEM_TYPES_CSV)
+    median_data = load_median_csv(COMBINED_MEDIAN_CSV)
+    print(f"Loaded {len(median_data)} (year, instance) groups from "
+          f"{COMBINED_MEDIAN_CSV.name}")
     for stem, portfolios in DATASETS:
-        build_dataset(stem, portfolios, problem_types)
+        build_dataset(stem, portfolios, problem_types, median_data)
 
 
 if __name__ == "__main__":

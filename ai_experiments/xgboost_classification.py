@@ -2,7 +2,6 @@ from pathlib import Path
 import sys
 
 import numpy as np
-from sklearn.model_selection import cross_val_predict, GroupShuffleSplit, GroupKFold
 import xgboost as xgb
 import optuna
 import joblib
@@ -10,21 +9,15 @@ import joblib
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from utils.shared_data import get_cpsat8_ek1_data, get_cpsat8_k1_data, get_cpsat8_k1_ek1_data, prepare_labels
-from utils.cross_solver_eval import shared_test_borda
+from utils.cross_solver_eval import make_train_val_test_indices
 
-# Canonical 3-solver split — defines the shared test rows reused for every dataset.
-# Group-by-problem so no problem family appears in both train and test.
-X_canon, Y_canon, meta_canon = get_cpsat8_k1_ek1_data()
-y_labels_canon, Y_borda_canon = prepare_labels(Y_canon)
-
+_, _, meta_canon = get_cpsat8_k1_ek1_data()
 groups_canon = meta_canon["problem"]
-splitter = GroupShuffleSplit(n_splits=1, test_size=0.2, random_state=42)
-train_idx, test_idx = next(splitter.split(X_canon, y_labels_canon, groups=groups_canon))
-Y_test_borda_3solver = Y_borda_canon[test_idx]
+train_idx, val_idx, test_idx = make_train_val_test_indices(groups_canon)
+trainval_idx = np.concatenate([train_idx, val_idx])
 
-print(f"shared test baselines (always solver i): {np.sum(Y_test_borda_3solver, axis=0)}")
-print(f"shared test oracle (best solver per row): {np.sum(np.max(Y_test_borda_3solver, axis=1))}")
-print(f"train problems: {len(np.unique(groups_canon[train_idx]))}, test problems: {len(np.unique(groups_canon[test_idx]))}")
+print(f"split sizes: train={len(train_idx)}  val={len(val_idx)}  test={len(test_idx)}")
+print(f"problems:    train={len(np.unique(groups_canon[train_idx]))}  val={len(np.unique(groups_canon[val_idx]))}  test={len(np.unique(groups_canon[test_idx]))}")
 
 datasets = [
     ('cpsat8_k1_ek1', get_cpsat8_k1_ek1_data),
@@ -40,14 +33,13 @@ for name, getter in datasets:
     X, Y, meta = getter()
     assert np.array_equal(meta["problem"], groups_canon), f"meta['problem'] misaligned for {name}"
     y_labels, Y_borda = prepare_labels(Y)
-    X_train = X[train_idx]
-    y_train = y_labels[train_idx]
-    X_test = X[test_idx]
-    Y_train_borda = Y_borda[train_idx]
-    train_groups = meta["problem"][train_idx]
+    Y_val_borda = Y_borda[val_idx]
+    Y_test_borda_local = Y_borda[test_idx]
+    val_rows = np.arange(len(val_idx))
+    test_rows = np.arange(len(test_idx))
 
-    print(f"train baselines (always local solver i): {np.sum(Y_train_borda, axis=0)}")
-    print(f"train oracle (best solver per row): {np.sum(np.max(Y_train_borda, axis=1))}")
+    print(f"val baselines (always local solver i): {np.sum(Y_val_borda, axis=0)}")
+    print(f"val oracle (best solver per row): {np.sum(np.max(Y_val_borda, axis=1))}")
 
     def objective(trial):
         params = {
@@ -63,20 +55,19 @@ for name, getter in datasets:
         threshold = trial.suggest_float('threshold', 0.34, 0.99)
         model = xgb.XGBClassifier(**params)
 
-        cv = GroupKFold(n_splits=5)
-        proba = cross_val_predict(model, X_train, y_train, method="predict_proba", cv=cv, groups=train_groups, n_jobs=28, verbose=1)
+        model.fit(X[train_idx], y_labels[train_idx])
+        proba = model.predict_proba(X[val_idx])
 
         predicted_solvers = np.argmax(proba, axis=1)
-        predicted_solvers[proba.max(axis=1) < threshold] = 0  # cpsat8 fallback
+        predicted_solvers[proba.max(axis=1) < threshold] = 0
 
-        row_indices = np.arange(len(Y_train_borda))
-        bordas = Y_train_borda[row_indices, predicted_solvers]
+        bordas = Y_val_borda[val_rows, predicted_solvers]
         return np.sum(bordas)
 
     study = optuna.create_study(direction="maximize")
     study.optimize(objective, n_trials=50)
 
-    print(f"best train total borda: {study.best_value}")
+    print(f"best val total borda: {study.best_value}")
     print("Best Hyperparameters:")
     for key, value in study.best_params.items():
         print(f"  {key}: {value}")
@@ -89,17 +80,30 @@ for name, getter in datasets:
         n_jobs=28,
         random_state=42,
     )
-    best_model.fit(X_train, y_train)
-    test_proba = best_model.predict_proba(X_test)
+
+    best_model.fit(X[trainval_idx], y_labels[trainval_idx])
+    test_proba = best_model.predict_proba(X[test_idx])
     predictions_local = np.argmax(test_proba, axis=1)
-    predictions_local[test_proba.max(axis=1) < best_threshold] = 0  # cpsat8 fallback
-    test_borda = shared_test_borda(predictions_local, name, Y_test_borda_3solver)
+    predictions_local[test_proba.max(axis=1) < best_threshold] = 0
+    test_borda = np.sum(Y_test_borda_local[test_rows, predictions_local])
+
+    test_baselines_local = np.sum(Y_test_borda_local, axis=0)
+    test_oracle_local = np.sum(np.max(Y_test_borda_local, axis=1))
+    y_test_local = y_labels[test_idx]
+    test_accuracy = (predictions_local == y_test_local).mean()
+    test_majority = max((y_test_local == c).mean() for c in range(Y.shape[1]))
+
     print(f"chosen threshold: {best_threshold:.3f}")
-    print(f"test total borda on shared 3-solver test set: {test_borda}")
+    print(f"test total borda (local {name}): {test_borda:.2f}")
+    print(f"test baselines (local always solver i): {test_baselines_local}")
+    print(f"test oracle (local best per row):  {test_oracle_local:.2f}")
+    print(f"test accuracy: {test_accuracy*100:.1f}%  (test majority baseline: {test_majority*100:.1f}%)")
 
     results[name] = {
-        'train_borda': study.best_value,
-        'test_borda_shared': test_borda,
+        'val_borda': study.best_value,
+        'test_borda_local': test_borda,
+        'test_oracle_local': test_oracle_local,
+        'test_cpsat_baseline_local': test_baselines_local[0],
         'threshold': best_threshold,
         'best_params': best_params,
     }
@@ -113,11 +117,7 @@ for name, getter in datasets:
     final_model.fit(X, y_labels)
     joblib.dump({'model': final_model, 'threshold': best_threshold}, f'models/xgb_model_{name}.joblib')
 
-print("\n========== Summary (test Borda on shared 3-solver test set) ==========")
-oracle = np.sum(np.max(Y_test_borda_3solver, axis=1))
-baselines = np.sum(Y_test_borda_3solver, axis=0)
-print(f"oracle: {oracle:.2f}")
-print(f"baselines [cpsat8, k1, ek1]: {baselines}")
+print("\n========== Summary (test Borda using each dataset's local Borda) ==========")
 for name, r in results.items():
-    ratio = r['test_borda_shared'] / oracle if oracle else float('nan')
-    print(f"  {name:8s}  test_borda={r['test_borda_shared']:.2f}  oracle_ratio={ratio:.3f}  threshold={r['threshold']:.3f}")
+    ratio = r['test_borda_local'] / r['test_oracle_local'] if r['test_oracle_local'] else float('nan')
+    print(f"  {name:14s}  test_borda={r['test_borda_local']:.2f}  oracle={r['test_oracle_local']:.2f}  cpsat={r['test_cpsat_baseline_local']:.2f}  oracle_ratio={ratio:.3f}  threshold={r['threshold']:.3f}")

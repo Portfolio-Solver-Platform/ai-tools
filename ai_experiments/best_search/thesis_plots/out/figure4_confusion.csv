@@ -1,0 +1,10 @@
+cell,value
+true_cpsat_pred_cpsat,938
+true_cpsat_pred_k1,75
+true_k1_pred_cpsat,256
+true_k1_pred_k1,110
+precision_k1,0.595
+recall_k1,0.301
+precision_cpsat,0.786
+recall_cpsat,0.926
+accuracy,0.760

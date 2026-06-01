@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Score the final portfolios (cpsat8, k1-8c-8s-v1, ek1-8c-8s-v2) against the
-15 open-category ladder solvers, using the aggregated combined_avg.csv.
+15 open-category ladder solvers, using the aggregated combined_median.csv.
 Restricted to 2023-2025 (the years for which the ladder data exists).
 
 Per-instance ceiling = 15 (no self-tie since the portfolios aren't in the
@@ -19,7 +19,7 @@ ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT.parent.parent.parent))
 from utils.borda import _compare, _parse_obj  # noqa: E402
 
-AVG_CSV   = ROOT / "combined_avg.csv"
+MEDIAN_CSV = ROOT / "combined_median.csv"
 OPEN_CSV  = ROOT.parent.parent / "open-category-benchmarks" / "combined.csv"
 TYPES_CSV = ROOT.parent.parent / "open-category-benchmarks" / "problem_types.csv"
 OUT_CSV   = ROOT / "leaderboard_vs_open.csv"
@@ -80,7 +80,6 @@ def main():
     problem_types = load_problem_types(TYPES_CSV)
     open_rows = list(csv.DictReader(open(OPEN_CSV)))
 
-    # Build the 15-ladder opponent set + per-instance results
     instances = []
     inst_year = {}
     inst_model = {}
@@ -107,15 +106,14 @@ def main():
                     r["status"], r["time_ms"], r["objective"], r["wrong"] == "True")
         opp_inst.append(d)
 
-    # Load each portfolio's per-instance row from combined_avg.csv (mean time)
     entities: dict[str, dict[tuple, dict]] = defaultdict(dict)
     coverage: dict[str, dict[str, int]] = defaultdict(lambda: defaultdict(int))
-    for r in csv.DictReader(open(AVG_CSV)):
+    for r in csv.DictReader(open(MEDIAN_CSV)):
         if r["year"] not in YEARS:
             continue
         key = (r["problem"], r["name"])
         entities[r["schedule"]][key] = make_row(
-            r["status"], r["time_ms_mean"], r["objective"])
+            r["status"], r["time_ms"], r["objective"])
         coverage[r["schedule"]][r["year"]] += 1
 
     n_inst = len(instances)

@@ -1,140 +1,117 @@
-from pathlib import Path
+"""
+Leave-one-year-out evaluation for GPC portfolio selection (cpsat8_k1 only).
+
+GPC tunes its kernel hyperparameters internally during .fit(), so there is no
+inner-CV HPO loop — we just fix n_restarts_optimizer and let GPC do its thing.
+Threshold-aware decision rules live in gpc_threshold_sweep.py.
+"""
+import os
+for k in ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS"):
+    os.environ.setdefault(k, "1")
+
 import sys
+import time
+from pathlib import Path
 
 import numpy as np
-from sklearn.model_selection import cross_val_predict, GroupShuffleSplit, GroupKFold
-from sklearn.preprocessing import StandardScaler
-from sklearn.pipeline import Pipeline
+from joblib import Parallel, delayed
 from sklearn.gaussian_process import GaussianProcessClassifier
 from sklearn.gaussian_process.kernels import RBF, ConstantKernel
-import optuna
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
 import joblib
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from utils.shared_data import get_cpsat8_k1_data, prepare_labels
+from utils.cross_solver_eval import year_kfold_folds
 
-from utils.shared_data import get_cpsat8_ek1_data, get_cpsat8_k1_data, get_cpsat8_k1_ek1_data, prepare_labels
-from utils.cross_solver_eval import shared_test_borda
+N_RESTARTS = 3
+N_JOBS = 10
 
-# Canonical 3-solver split — defines the shared test rows reused for every dataset.
-# Group-by-problem so no problem family appears in both train and test.
-X_canon, Y_canon, meta_canon = get_cpsat8_k1_ek1_data()
-y_labels_canon, Y_borda_canon = prepare_labels(Y_canon)
-
-groups_canon = meta_canon["problem"]
-splitter = GroupShuffleSplit(n_splits=1, test_size=0.2, random_state=42)
-train_idx, test_idx = next(splitter.split(X_canon, y_labels_canon, groups=groups_canon))
-Y_test_borda_3solver = Y_borda_canon[test_idx]
-
-print(f"shared test baselines (always solver i): {np.sum(Y_test_borda_3solver, axis=0)}")
-print(f"shared test oracle (best solver per row): {np.sum(np.max(Y_test_borda_3solver, axis=1))}")
-print(f"train problems: {len(np.unique(groups_canon[train_idx]))}, test problems: {len(np.unique(groups_canon[test_idx]))}")
-
-# 3-class skipped: prior threshold sweep showed no exploitable signal on k1_ek1
-datasets = [
-    ('cpsat8_k1',  get_cpsat8_k1_data),
-    ('cpsat8_ek1', get_cpsat8_ek1_data),
+DATASETS = [
+    ("cpsat8_k1", get_cpsat8_k1_data),
 ]
 
-results = {}
-Path('models').mkdir(exist_ok=True)
 
-for name, getter in datasets:
-    print(f"\n========== dataset: {name} ==========")
-    X, Y, meta = getter()
-    assert np.array_equal(meta["problem"], groups_canon), f"meta['problem'] misaligned for {name}"
-    y_labels, Y_borda = prepare_labels(Y)
-    X_train = X[train_idx]
-    y_train = y_labels[train_idx]
-    X_test = X[test_idx]
-    Y_train_borda = Y_borda[train_idx]
-    train_groups = meta["problem"][train_idx]
-
-    print(f"train baselines (always local solver i): {np.sum(Y_train_borda, axis=0)}")
-    print(f"train oracle (best solver per row): {np.sum(np.max(Y_train_borda, axis=1))}")
-
-    def objective(trial):
-        length_scale_init = trial.suggest_float("length_scale_init", 1e-2, 1e2, log=True)
-        n_restarts = trial.suggest_int("n_restarts_optimizer", 0, 3)
-        threshold = trial.suggest_float("threshold", 0.34, 0.99)
-
-        kernel = ConstantKernel(1.0) * RBF(length_scale=length_scale_init)
-        gpc_pipeline = Pipeline([
-            ('scaler', StandardScaler()),
-            ('model', GaussianProcessClassifier(
-                kernel=kernel,
-                n_restarts_optimizer=n_restarts,
-                random_state=42,
-                n_jobs=1,
-            ))
-        ])
-
-        cv = GroupKFold(n_splits=len(np.unique(train_groups)) // 5)
-        proba = cross_val_predict(gpc_pipeline, X_train, y_train, method="predict_proba", cv=cv, groups=train_groups, n_jobs=28, verbose=1)
-
-        predicted_solvers = np.argmax(proba, axis=1)
-        predicted_solvers[proba.max(axis=1) < threshold] = 0  # cpsat8 fallback
-
-        row_indices = np.arange(len(Y_train_borda))
-        bordas = Y_train_borda[row_indices, predicted_solvers]
-        return np.sum(bordas)
-
-    study = optuna.create_study(direction="maximize")
-    study.optimize(objective, n_trials=10)
-
-    print(f"best train total borda: {study.best_value}")
-    print("Best Hyperparameters:")
-    for key, value in study.best_params.items():
-        print(f"  {key}: {value}")
-
-    best_params = dict(study.best_params)
-    best_threshold = best_params.pop('threshold')
-    best_length_scale = best_params.pop('length_scale_init')
-    best_n_restarts = best_params.pop('n_restarts_optimizer')
-
-    best_kernel = ConstantKernel(1.0) * RBF(length_scale=best_length_scale)
-    test_pipeline = Pipeline([
-        ('scaler', StandardScaler()),
-        ('model', GaussianProcessClassifier(
-            kernel=best_kernel,
-            n_restarts_optimizer=best_n_restarts,
+def make_pipeline():
+    kernel = ConstantKernel(1.0) * RBF(length_scale=1.0)
+    return Pipeline([
+        ("scaler", StandardScaler()),
+        ("model",  GaussianProcessClassifier(
+            kernel=kernel,
+            n_restarts_optimizer=N_RESTARTS,
             random_state=42,
-            n_jobs=28,
-        ))
+        )),
     ])
-    test_pipeline.fit(X_train, y_train)
-    test_proba = test_pipeline.predict_proba(X_test)
-    predictions_local = np.argmax(test_proba, axis=1)
-    predictions_local[test_proba.max(axis=1) < best_threshold] = 0  # cpsat8 fallback
-    test_borda = shared_test_borda(predictions_local, name, Y_test_borda_3solver)
-    print(f"chosen threshold: {best_threshold:.3f}")
-    print(f"test total borda on shared 3-solver test set: {test_borda}")
 
-    results[name] = {
-        'train_borda': study.best_value,
-        'test_borda_shared': test_borda,
-        'threshold': best_threshold,
-        'length_scale_init': best_length_scale,
-        'n_restarts_optimizer': best_n_restarts,
+
+def _evaluate_fold(X, y_labels, Y_borda, fold_label, train_idx, test_idx):
+    t0 = time.time()
+    pipe = make_pipeline()
+    pipe.fit(X[train_idx], y_labels[train_idx])
+    pred = pipe.predict(X[test_idx])
+
+    Y_te = Y_borda[test_idx]
+    test_borda     = Y_te[np.arange(len(test_idx)), pred].sum()
+    oracle         = Y_te.max(axis=1).sum()
+    cpsat_baseline = Y_te[:, 0].sum()
+    accuracy       = (pred == y_labels[test_idx]).mean()
+
+    return {
+        "fold_label":     fold_label,
+        "n_test":         len(test_idx),
+        "test_borda":     float(test_borda),
+        "oracle":         float(oracle),
+        "cpsat_baseline": float(cpsat_baseline),
+        "accuracy":       float(accuracy),
+        "fit_seconds":    time.time() - t0,
     }
 
-    final_kernel = ConstantKernel(1.0) * RBF(length_scale=best_length_scale)
-    final_pipe = Pipeline([
-        ('scaler', StandardScaler()),
-        ('model', GaussianProcessClassifier(
-            kernel=final_kernel,
-            n_restarts_optimizer=best_n_restarts,
-            random_state=42,
-            n_jobs=28,
-        ))
-    ])
-    final_pipe.fit(X, y_labels)
-    joblib.dump({'model': final_pipe, 'threshold': best_threshold}, f'models/gpc_model_{name}.joblib')
 
-print("\n========== Summary (test Borda on shared 3-solver test set) ==========")
-oracle = np.sum(np.max(Y_test_borda_3solver, axis=1))
-baselines = np.sum(Y_test_borda_3solver, axis=0)
-print(f"oracle: {oracle:.2f}")
-print(f"baselines [cpsat8, k1, ek1]: {baselines}")
-for name, r in results.items():
-    ratio = r['test_borda_shared'] / oracle if oracle else float('nan')
-    print(f"  {name:8s}  test_borda={r['test_borda_shared']:.2f}  oracle_ratio={ratio:.3f}  threshold={r['threshold']:.3f}")
+def evaluate_dataset(name, getter):
+    print(f"\n========== dataset: {name} ==========")
+    X, Y, meta = getter()
+    y_labels, Y_borda = prepare_labels(Y)
+    years = meta["year"]
+
+    folds = year_kfold_folds(years, n_splits=5)
+    print(f"  outer folds: {len(folds)} (5-fold GroupKFold by year, parallel n_jobs={N_JOBS})")
+
+    fold_records = Parallel(n_jobs=N_JOBS)(
+        delayed(_evaluate_fold)(X, y_labels, Y_borda, fold_label, train_idx, test_idx)
+        for fold_label, train_idx, test_idx in folds
+    )
+    fold_records.sort(key=lambda r: r["fold_label"])
+    for r in fold_records:
+        print(f"    {r['fold_label']}: borda={r['test_borda']:>6.2f}  "
+              f"oracle={r['oracle']:>6.2f}  cpsat={r['cpsat_baseline']:>6.2f}  "
+              f"ratio={r['test_borda'] / r['oracle'] if r['oracle'] else float('nan'):.3f}  "
+              f"acc={r['accuracy'] * 100:>5.1f}%  ({r['fit_seconds']:.0f}s)")
+
+    sum_borda  = sum(r["test_borda"]     for r in fold_records)
+    sum_oracle = sum(r["oracle"]         for r in fold_records)
+    sum_cpsat  = sum(r["cpsat_baseline"] for r in fold_records)
+    n_total    = sum(r["n_test"]         for r in fold_records)
+    acc_weighted = sum(r["accuracy"] * r["n_test"] for r in fold_records) / n_total
+    print(f"\n  totals: borda={sum_borda:.2f}  oracle={sum_oracle:.2f}  "
+          f"cpsat={sum_cpsat:.2f}  oracle_ratio={sum_borda / sum_oracle:.3f}  "
+          f"acc={acc_weighted * 100:.1f}%  ({n_total} test instances)")
+
+    print("  fitting deliverable model on all 15 years...")
+    final_pipe = make_pipeline()
+    final_pipe.fit(X, y_labels)
+
+    Path("models").mkdir(exist_ok=True)
+    out_path = Path(f"models/gpc_model_{name}.joblib")
+    joblib.dump(final_pipe, out_path)
+    print(f"  saved {out_path}")
+    return fold_records
+
+
+def main():
+    for name, getter in DATASETS:
+        evaluate_dataset(name, getter)
+
+
+if __name__ == "__main__":
+    main()

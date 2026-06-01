@@ -1,0 +1,18 @@
+========== DivBag/log_std+quantile  (n_trials=80) ==========
+    2011: borda= 61.73  oracle= 66.59  acc= 73.0%  (609s)
+    2012: borda= 55.70  oracle= 66.59  acc= 73.0%  (1116s)
+    2013: borda= 61.70  oracle= 68.87  acc= 79.2%  (901s)
+    2014: borda= 64.02  oracle= 67.57  acc= 90.8%  (1041s)
+    2015: borda= 55.77  oracle= 65.53  acc= 75.8%  (958s)
+    2016: borda= 58.73  oracle= 61.63  acc= 82.1%  (758s)
+    2017: borda= 55.27  oracle= 67.28  acc= 76.1%  (1153s)
+    2018: borda= 58.48  oracle= 63.24  acc= 85.6%  (631s)
+    2019: borda= 56.51  oracle= 62.53  acc= 76.4%  (1089s)
+    2020: borda= 55.55  oracle= 61.61  acc= 77.7%  (1260s)
+    2021: borda= 54.46  oracle= 64.91  acc= 75.8%  (895s)
+    2022: borda= 57.58  oracle= 66.40  acc= 67.4%  (1092s)
+    2023: borda= 44.99  oracle= 63.33  acc= 52.2%  (962s)
+    2024: borda= 51.73  oracle= 61.51  acc= 70.2%  (1188s)
+    2025: borda= 42.59  oracle= 59.02  acc= 64.9%  (1237s)
+  totals: borda=834.80  oracle=966.61  cpsat=788.87  ratio=0.864  acc=74.9%  (1379 test instances)   wall=1261s
+========== DivBag/log_std+quantile+log_quantile  (n_trials=80) ==========

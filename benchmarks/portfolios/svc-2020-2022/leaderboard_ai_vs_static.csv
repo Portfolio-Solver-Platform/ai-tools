@@ -1,0 +1,9 @@
+ai,static,track,year,borda_ai,borda_static,n
+svc-k1,k1-8c-8s-v1,ineligible,2020,53.35,31.65,94
+svc-k1,k1-8c-8s-v1,ineligible,2021,49.51,38.49,96
+svc-k1,k1-8c-8s-v1,ineligible,2022,59.14,33.86,95
+svc-k1,k1-8c-8s-v1,ineligible,TOTAL,162.0,104.0,285
+svc-ek1,ek1-8c-8s-v2,eligible,2020,56.78,28.22,94
+svc-ek1,ek1-8c-8s-v2,eligible,2021,49.73,38.27,96
+svc-ek1,ek1-8c-8s-v2,eligible,2022,62.88,30.12,95
+svc-ek1,ek1-8c-8s-v2,eligible,TOTAL,169.39,96.61,285

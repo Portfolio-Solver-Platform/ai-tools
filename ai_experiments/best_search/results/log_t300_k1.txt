@@ -1,0 +1,17 @@
+========== BagSVM-MW/log_std  (n_trials=300) ==========
+    2011: borda= 61.31  oracle= 66.59  acc= 73.0%  (954s)
+    2012: borda= 55.84  oracle= 66.59  acc= 74.0%  (1406s)
+    2013: borda= 61.04  oracle= 68.87  acc= 79.2%  (1527s)
+    2014: borda= 64.02  oracle= 67.57  acc= 89.8%  (1381s)
+    2015: borda= 57.75  oracle= 65.53  acc= 80.2%  (984s)
+    2016: borda= 58.92  oracle= 61.63  acc= 82.1%  (1586s)
+    2017: borda= 55.27  oracle= 67.28  acc= 76.1%  (1376s)
+    2018: borda= 57.80  oracle= 63.24  acc= 82.2%  (1460s)
+    2019: borda= 58.22  oracle= 62.53  acc= 77.5%  (1461s)
+    2020: borda= 55.25  oracle= 61.61  acc= 79.8%  (1546s)
+    2021: borda= 51.46  oracle= 64.91  acc= 72.5%  (960s)
+    2022: borda= 58.00  oracle= 66.40  acc= 69.6%  (1582s)
+    2023: borda= 53.24  oracle= 63.33  acc= 68.9%  (1120s)
+    2024: borda= 53.62  oracle= 61.51  acc= 72.6%  (1213s)
+    2025: borda= 39.35  oracle= 59.02  acc= 59.7%  (1642s)
+  totals: borda=841.08  oracle=966.61  cpsat=788.87  ratio=0.870  acc=76.1%  (1379 test instances)   wall=1643s

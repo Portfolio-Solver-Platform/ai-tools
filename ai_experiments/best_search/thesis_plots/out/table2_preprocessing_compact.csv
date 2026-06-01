@@ -1,0 +1,5 @@
+preprocessing,plain_svc_borda,bagged_mw_borda
+StandardScaler,833.09,829.22
+QuantileTransformer,824.02,839.52
+signed-log + StandardScaler,818.65,846.31
+signed-log + QuantileTransformer,822.25,837.29

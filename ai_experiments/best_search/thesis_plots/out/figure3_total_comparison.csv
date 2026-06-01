@@ -1,0 +1,7 @@
+method,k1_borda,ek1_borda
+always-other,574.13,514.76
+random,681.54,681.08
+always-cpsat,788.87,849.24
+Plain SVC,833.09,860.04
+BagSVC-MW,846.31,883.54
+Oracle,966.61,986.09

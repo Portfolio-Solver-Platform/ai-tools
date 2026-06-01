@@ -1,0 +1,5 @@
+Best experiment key: bag_svm_mw_log_std_x20  (total LOYO Borda = 846.31)
+Experiment: BagSVM-MW/log_std  n_trials=100
+final params (median of LOYO folds) = {'max_samples': 0.8572427586182719, 'C': 8.30298747010578, 'gamma': 0.016700300659070376, 'wpow': 0.7835958041461719}
+Saved /home/sofus/speciale/ai/ai-tools/ai_experiments/best_search/models/best_bag_svm_mw_log_std_x20.joblib
+Self-check on training data: borda=904.60 acc=83.7% (sanity, not generalization)

@@ -1,0 +1,18 @@
+========== HPDivBag-MW/log_std-n50  (n_trials=60) ==========
+    2011: borda= 61.31  oracle= 66.59  acc= 72.0%  (1537s)
+    2012: borda= 55.84  oracle= 66.59  acc= 74.0%  (1148s)
+    2013: borda= 60.51  oracle= 68.87  acc= 80.2%  (1438s)
+    2014: borda= 62.98  oracle= 67.57  acc= 84.7%  (1345s)
+    2015: borda= 57.24  oracle= 65.53  acc= 75.8%  (1543s)
+    2016: borda= 58.92  oracle= 61.63  acc= 82.1%  (1505s)
+    2017: borda= 55.27  oracle= 67.28  acc= 76.1%  (1345s)
+    2018: borda= 57.80  oracle= 63.24  acc= 82.2%  (1379s)
+    2019: borda= 56.51  oracle= 62.53  acc= 76.4%  (1500s)
+    2020: borda= 56.54  oracle= 61.61  acc= 79.8%  (1430s)
+    2021: borda= 52.39  oracle= 64.91  acc= 72.5%  (1347s)
+    2022: borda= 58.00  oracle= 66.40  acc= 69.6%  (1250s)
+    2023: borda= 52.79  oracle= 63.33  acc= 68.9%  (1134s)
+    2024: borda= 51.39  oracle= 61.51  acc= 69.0%  (1234s)
+    2025: borda= 42.59  oracle= 59.02  acc= 64.9%  (1703s)
+  totals: borda=840.07  oracle=966.61  cpsat=788.87  ratio=0.869  acc=75.4%  (1379 test instances)   wall=1704s
+========== HPDivBag-MW/quantile-n50  (n_trials=60) ==========
